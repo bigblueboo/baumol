@@ -49,5 +49,12 @@ Vite + strict TS, no framework. Dev port 6414, preview 6415, e2e 6416
   DESIGN.md scenario selector (education/healthcare/etc.).
 - Cross-browser QA (Safari/WebKit, Firefox), screen readers, zoom, and
   forced-colors are untested — WebKit can't launch reliably on this box.
-- Not deployed; local only. No git history beyond the DESIGN.md baseline
-  commit made to enable diff-based review tooling.
+
+## Deployment
+
+- Live at https://baumol.charliedeck.com (Netlify site `baumol-charliedeck`,
+  id 8c2d4a33-c7e6-4a39-ad84-113ee19cea4f, team charliedeck).
+- Public repo: https://github.com/bigblueboo/baumol — push to `main`
+  deploys (build `npm run build`, publish `dist`, Node 22 via netlify.toml).
+- charliedeck.com is on Netlify DNS, so the subdomain and TLS provisioned
+  automatically from `custom_domain`.
