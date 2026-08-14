@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>One Hour Is Still One Hour</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23f6f0e4' stroke='%233a332a' stroke-width='2.5'/%3E%3Cline x1='16' y1='16' x2='16' y2='7' stroke='%23c25a34' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='16' y1='16' x2='22' y2='19' stroke='%233a332a' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <meta
+      name="description"
+      content="A small-town playground for Baumol's cost disease: press one button, make software engineers wildly productive, and watch what happens to the babysitter's rate."
+    />
+  </head>
+  <body>
+    <main class="page">
+      <header class="masthead">
+        <p class="kicker">A playground for Baumol's cost disease</p>
+        <h1>One hour is still one&nbsp;hour</h1>
+        <p class="dek">
+          It's 1999, in a town with two jobs. A software engineer and a
+          babysitter both earn <strong>$12 an hour</strong>. You are about to
+          make one of them thirty-two times as productive. Watch what it does
+          to the other one's price.
+        </p>
+      </header>
+
+      <section class="stage-wrap" aria-label="The town">
+        <div id="duel" class="duel" aria-label="The two hourly prices"></div>
+        <div
+          id="scene-host"
+          tabindex="0"
+          role="region"
+          aria-label="The town scene. On narrow screens, scroll sideways to pan between the studio and the home."
+        ></div>
+        <p id="caption" class="caption" aria-live="polite"></p>
+      </section>
+
+      <section class="console" aria-label="Controls">
+        <div class="console-main">
+          <button id="invent" class="invent" type="button"></button>
+          <ol id="era-track" class="era-track" aria-label="Tool eras"></ol>
+        </div>
+        <div id="time-controls" class="time-controls" role="group" aria-label="Time"></div>
+      </section>
+
+      <section id="ledger" class="ledger" aria-label="The town ledger" hidden></section>
+
+      <section id="crisis" class="crisis" hidden></section>
+
+      <section id="charts" class="charts" aria-label="The town in charts" hidden></section>
+
+      <section id="townhall-wrap" hidden>
+        <details id="townhall" class="townhall">
+          <summary>Town hall — change the rules</summary>
+          <div id="townhall-body"></div>
+        </details>
+      </section>
+
+      <footer class="colophon">
+        <p>
+          The mechanism is William Baumol and William Bowen's
+          <em>cost disease</em> (1965): when technology multiplies what an hour
+          of work produces in one sector, that hour's value rises everywhere —
+          pulled up through paychecks or through cheaper goods, but either way
+          an unchanged human hour becomes relatively expensive. Everything on
+          this page is a small two-sector economy running live in your browser.
+          For the real thing, start with Baumol &amp; Bowen's
+          <a
+            href="https://www.jstor.org/stable/1816292"
+            target="_blank"
+            rel="noopener"
+            ><em>On the Performing Arts: The Anatomy of Their Economic
+            Problems</em></a
+          >
+          (1965), or the modern overview in
+          <a
+            href="https://www.intereconomics.eu/contents/year/2023/number/6/article/revisiting-baumol-s-disease-structural-change-productivity-slowdown-and-income-inequality.html"
+            target="_blank"
+            rel="noopener"
+            >Revisiting Baumol's Disease</a
+          >
+          (2023).
+        </p>
+        <details class="model-notes">
+          <summary>What the model assumes (and what it doesn't claim)</summary>
+          <ul>
+            <li>
+              The whole lesson is one identity: with a shared wage
+              <em>w</em>, a care-hour costs <em>w</em> and a software unit
+              costs <em>w ÷ A</em>, so
+              <strong>p<sub>care</sub> / p<sub>software</sub> = A</strong> —
+              the productivity multiple. Demand is a two-good CES system
+              (the "will families accept an alternative?" lever is its
+              elasticity of substitution), with a floor on care demand
+              because parents work regardless of price.
+            </li>
+            <li>
+              The town is a parable, not a history. Real IDEs did not double
+              output, and "software units" are a fiction; the eras are named
+              for flavor, sized for arithmetic.
+            </li>
+            <li>
+              Studios hire anyone trained, pay what an hour produces, and sell
+              software at labor cost — no profits, no capital owners, no
+              unemployment beyond retraining and unbooked sitters.
+            </li>
+            <li>
+              Workers are interchangeable after retraining, and a sitter's
+              hour is one hour of one-on-one care unless a policy changes the
+              product (batching, the robo-app).
+            </li>
+            <li>
+              The robo-sitter is a stylized routing rule — families who accept
+              it take it when it's cheaper — not a full substitution model.
+              Its price (3 software units/hr) and its thinner attention are
+              assumptions, on display, not findings.
+            </li>
+            <li>
+              The toy isolates one mechanism: the rising opportunity cost of
+              human time. Real childcare, healthcare, and tuition also carry
+              administration, market power, insurance, and quality change —
+              none of which are modeled here.
+            </li>
+          </ul>
+        </details>
+      </footer>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
