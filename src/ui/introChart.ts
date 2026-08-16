@@ -8,22 +8,25 @@ const NS = "http://www.w3.org/2000/svg";
 
 interface Row {
   label: string;
-  /** Percent change, 2000–2023, rounded. */
+  /** Percent change, 2000 -> 2023 annual averages, nearest percent. */
   change: number;
+  /** BLS CPI-U series id (U.S. city average), for the table twin. */
+  series: string;
 }
 
-// Rounded from BLS CPI-U series (U.S. city average), 2000–2023.
+// Computed from BLS CPI-U monthly data (annual averages, 2000 vs 2023),
+// fetched from the BLS public API; rounded to the nearest percent.
 const ROWS: Row[] = [
-  { label: "Hospital services", change: 240 },
-  { label: "College tuition", change: 185 },
-  { label: "Childcare", change: 115 },
-  { label: "New cars", change: 20 },
-  { label: "Cellphone service", change: -40 },
-  { label: "Software", change: -70 },
-  { label: "Televisions", change: -97 },
+  { label: "Hospital services", change: 238, series: "CUUR0000SEMD01" },
+  { label: "College tuition & fees", change: 178, series: "CUUR0000SEEB01" },
+  { label: "Day care & preschool", change: 123, series: "CUUR0000SEEB03" },
+  { label: "New vehicles", change: 25, series: "CUUR0000SETA01" },
+  { label: "Wireless phone service", change: -37, series: "CUUR0000SEED03" },
+  { label: "Computer software", change: -72, series: "CUUR0000SEEE02" },
+  { label: "Televisions", change: -98, series: "CUUR0000SERA01" },
 ];
 
-const AVERAGE = 80; // overall CPI, same period, rounded
+const AVERAGE = 77; // all items (CUUR0000SA0), same computation
 
 const RISE = "#c25a34";
 const FALL = "#2f6aa8";
@@ -107,8 +110,11 @@ export function buildIntroChart(host: HTMLElement): void {
   const table = document.createElement("details");
   table.className = "table-view";
   table.innerHTML =
-    `<summary>Read as a table</summary><table><thead><tr><th>Item</th><th>Change, 2000–2023</th></tr></thead><tbody>` +
-    ROWS.map((r) => `<tr><td>${r.label}</td><td>${r.change > 0 ? "+" : ""}${r.change}%</td></tr>`).join("") +
-    `<tr><td>Overall inflation</td><td>+${AVERAGE}%</td></tr></tbody></table>`;
+    `<summary>Read as a table (with BLS series IDs)</summary><table><thead><tr><th>Item</th><th>CPI-U series</th><th>2000 → 2023</th></tr></thead><tbody>` +
+    ROWS.map(
+      (r) =>
+        `<tr><td>${r.label}</td><td>${r.series}</td><td>${r.change > 0 ? "+" : ""}${r.change}%</td></tr>`,
+    ).join("") +
+    `<tr><td>All items</td><td>CUUR0000SA0</td><td>+${AVERAGE}%</td></tr></tbody></table>`;
   host.appendChild(table);
 }
