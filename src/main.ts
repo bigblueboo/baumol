@@ -12,6 +12,7 @@ import { buildCharts } from "./ui/charts";
 import { buildControls } from "./ui/controls";
 import { buildTownhall } from "./ui/townhall";
 import { buildDuel } from "./ui/duel";
+import { buildIntroChart } from "./ui/introChart";
 import { DEFAULT_PARAMS } from "./model/params";
 
 const flags = parseFlags(window.location.search);
@@ -20,6 +21,7 @@ const store = createAppStore({ ...DEFAULT_PARAMS });
 const engine = new Engine(store);
 const director = new Director(store, flags.fast);
 
+buildIntroChart(document.getElementById("intro-chart")!);
 const scene = buildScene(document.getElementById("scene-host")!, store, flags.seed);
 const duel = buildDuel(document.getElementById("duel")!, store);
 const ledger = buildLedger(document.getElementById("ledger")!, store);

@@ -103,6 +103,104 @@ h1 {
   color: var(--ink);
 }
 
+/* ---------- explainer prose ---------- */
+
+.explainer {
+  max-width: 42rem;
+  margin-block: clamp(1.6rem, 4vw, 3rem);
+}
+
+.explainer h2 {
+  font-family: var(--serif);
+  font-variation-settings: "opsz" 44, "WONK" 1;
+  font-weight: 600;
+  font-size: clamp(1.4rem, 2.8vw, 1.9rem);
+  line-height: 1.15;
+  margin: clamp(1.8rem, 4vw, 2.6rem) 0 0.7rem;
+  text-wrap: balance;
+}
+
+.explainer h2:first-child {
+  margin-top: 0;
+}
+
+.explainer p {
+  font-family: var(--serif);
+  font-variation-settings: "opsz" 15;
+  font-size: clamp(1.02rem, 1.5vw, 1.14rem);
+  line-height: 1.62;
+  margin: 0 0 1rem;
+  color: var(--ink);
+}
+
+.explainer strong {
+  font-weight: 640;
+}
+
+.explainer a {
+  color: inherit;
+}
+
+.studio-ink {
+  color: var(--studio-deep);
+  font-weight: 640;
+}
+
+.care-ink {
+  color: var(--care-deep);
+  font-weight: 640;
+}
+
+.intro-chart {
+  margin: 1.4rem 0 1.6rem;
+}
+
+.intro-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.intro-chart svg text {
+  font-family: var(--sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.intro-chart figcaption {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin-top: 0.5rem;
+}
+
+.intro-chart .table-view summary {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  cursor: pointer;
+  margin-top: 0.3rem;
+}
+
+.intro-chart table {
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.intro-chart th,
+.intro-chart td {
+  text-align: right;
+  padding: 0.25em 0.9em 0.25em 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.intro-chart th:first-child,
+.intro-chart td:first-child {
+  text-align: left;
+}
+
 /* ---------- stage ---------- */
 
 .stage-wrap {
