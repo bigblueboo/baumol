@@ -1,44 +1,34 @@
 # One Hour Is Still One Hour
 
-**Live at [baumol.charliedeck.com](https://baumol.charliedeck.com).**
+**Live at [baumol.charliedeck.com](https://baumol.charliedeck.com).** Deployed by Netlify on every push to `main` (`netlify.toml`).
 
-A playground for Baumol's cost disease. It's 1999, in a town with two jobs:
-software engineer and babysitter, both at $12 an hour. One button makes the
-engineers repeatedly better at their job; nothing ever changes in the living
-room. The piece animates the causal chain — productivity, wages, retraining,
-the bidding war for the sitter's hour — then hands you the town's policy
-levers: rate caps, batching, subsidies, a robo-sitter app, and the deeper
-knobs (substitutability, retraining friction, wage pass-through, who gets the
-gains). A deterministic two-sector economy runs underneath; every readout and
-chart derives from it.
+An explorable explanation of Baumol's cost disease. A small town has a factory whose machine keeps getting better and a service (a barbershop, then a care house) where an hour of work still takes an hour. Press a button and watch the wage gap open, workers walk, and the service price climb, then follow the same engine through what a town can do about it, the demand assumption behind "services will eat the economy", who can still afford care, a casebook that runs eight real industries through the model beside what studies of each have found, and a lab with twelve settings from schools to plumbers to AI code review.
 
 ## Run
 
 ```sh
 npm install
-npm run dev        # http://localhost:6414 (host: true, strictPort)
+npm run dev
 ```
 
-URL flags: `?fast` compresses the narrated beats (used by e2e), `?seed=N`
-seeds the visual jitter. `npm run preview` serves a production build on 6415.
+The dev server listens on port 6170 on all interfaces: <http://localhost:6170>, or `http://m4air:6170` over Tailscale. `npm run preview` serves the production build on 6171.
+
+URL hooks: `?silent` locks sound off, `?fast` runs every figure four times faster (used by the e2e tests), and `#lab?s=<scenario>&<param>=<value>` opens the lab with settings (the lab writes these itself; use **Copy link**).
 
 ## Quality gates
 
 ```sh
-npm test           # vitest — the economics, pinned in 20 tests
-npm run test:e2e   # Playwright, desktop + phone projects (dev server on 6416)
-npm run lint       # tsc --noEmit (strict)
-npm run build      # typecheck + vite build
+npm test            # vitest: model, URL codec, formatting
+npm run test:e2e    # Playwright, desktop and 390×844 phone (port 6172)
+npm run lint        # tsc --noEmit, strict
+npm run build       # typecheck + production bundle
 ```
 
-## Where things live
+## Layout
 
-- `src/model/` — the pure sim: no DOM, no clock, no randomness. `sim.ts` holds
-  the two-sector economy (CES demand, shared labor market, training pipeline,
-  policy levers); `eras.ts` the six tool eras; `params.ts` the dials.
-- `src/app/` — engine (fixed-step driver), director (narration beats,
-  inscriptions, crisis), store (zustand vanilla), policies.
-- `src/ui/` — scene (the SVG town), charts, ledger, town hall, controls.
-- `tests/sim.test.ts` — the pedagogy as assertions: three doublings ≈ 8×, caps
-  create queues, subsidies move the bill, concentration splits affordability.
-- `DESIGN.md` — the original design brief the piece implements.
+- `src/model/` — the economy. Pure, deterministic, DOM-free: `economy.ts` (state, `observe`, `step`, `settle`), `residents.ts` (income distribution and access), `params.ts` (zod schema), `scenarios.ts` (the twelve settings).
+- `src/sim/` — fixed-step driver (`townSim.ts`) and the shared, visibility-aware animation loop (`loop.ts`).
+- `src/scene/` — the SVG town: buildings, people, noticeboard, icons.
+- `src/charts/` — a small direct-labelled XY chart.
+- `src/figures/` — one module per figure; `lab/` holds the sandbox, its control spec and its zustand store. `casebook.ts` holds the eight industry cases (rules over time, intuition, evidence, sources) and runs them headlessly; `cases.ts` draws them; `runCharts.ts` holds the run charts the casebook and lab share.
+- `index.html` — the essay text; figures mount into `[data-figure]` hosts as they near the viewport.

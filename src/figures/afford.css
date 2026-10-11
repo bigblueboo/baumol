@@ -1,0 +1,146 @@
+/* Fig 8: households */
+
+.hh-wrap {
+  margin-top: 4px;
+}
+
+.hh {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font-ui);
+}
+
+.hh__bar {
+  fill: var(--time);
+  transition:
+    y 500ms var(--ease-out),
+    height 500ms var(--ease-out),
+    fill 300ms;
+}
+
+.hh__bar.is-priced-out {
+  fill: var(--things);
+}
+
+.hh__need {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+  opacity: 0;
+  transition:
+    opacity 300ms,
+    y1 500ms var(--ease-out),
+    y2 500ms var(--ease-out);
+}
+
+.hh__need.is-on {
+  opacity: 1;
+}
+
+.hh__heart {
+  color: var(--ink-3);
+  transition: color 300ms;
+}
+
+.hh__heart .fill {
+  fill: transparent;
+  transition: fill 300ms;
+}
+
+.hh__heart.is-served {
+  color: var(--time);
+}
+
+.hh__heart.is-served .fill {
+  fill: var(--time);
+}
+
+.hh__quarter {
+  fill: var(--paper-deep);
+  opacity: 1;
+}
+
+.hh__quarter-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  fill: var(--ink-2);
+}
+
+.hh-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin: 6px 0 4px;
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  color: var(--ink-2);
+}
+
+.hh-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hh-legend__swatch {
+  width: 10px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--time);
+}
+
+.hh-legend__dash {
+  width: 22px;
+  border-top: 2px dashed var(--ink);
+}
+
+.hh__ghost {
+  stroke: var(--ink);
+  stroke-width: 2;
+  opacity: 0.45;
+  transition:
+    y1 500ms var(--ease-out),
+    y2 500ms var(--ease-out);
+}
+
+.hh-legend__tick {
+  width: 16px;
+  border-top: 2px solid var(--ink);
+  opacity: 0.6;
+}
+
+.hh-legend__item.is-hidden {
+  display: none;
+}
+
+.hh-axis {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  color: var(--ink-2);
+}
+
+/* On phones the chart is the payoff, so it comes straight after the readouts, ahead of the controls. */
+.hh-stage {
+  display: flex;
+  flex-direction: column;
+}
+
+.afford-body {
+  display: flex;
+  flex-direction: column;
+}
+
+@container (max-width: 640px) {
+  .afford-body > .fig-controls {
+    order: 3;
+    margin-top: 16px;
+  }
+  .afford-body > .hh-stage {
+    order: 2;
+  }
+}

@@ -1,0 +1,193 @@
+/* Shared figure furniture */
+
+.fig-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  align-items: flex-end;
+  margin-bottom: clamp(14px, 2.4vw, 22px);
+}
+
+.fig-controls--pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+.fig-controls--grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) repeat(3, auto);
+}
+
+@container (max-width: 700px) {
+  .fig-controls--pair,
+  .fig-controls--grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.ctl__example {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step--1);
+  color: var(--ink-2);
+  min-height: 2.6em;
+}
+
+.is-muted {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.chart-title {
+  margin: 0 0 4px;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  font-weight: 700;
+}
+
+.chart-box {
+  position: relative;
+}
+
+.plate__footnote {
+  margin: 12px 0 0;
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  color: var(--ink-3);
+}
+
+.verdict {
+  margin: 12px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  line-height: 1.45;
+  min-height: 2.9em;
+}
+
+.verdict.is-warning {
+  color: var(--things-ink);
+}
+
+/* Gauges: a labelled number with an optional bar */
+
+.gauges {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.gauge {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 10px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+}
+
+.gauge__label {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+
+.gauge__num {
+  color: var(--tone-ink);
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: var(--step-2);
+  line-height: 1;
+  grid-row: span 2;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.gauge__track {
+  height: 6px;
+  background: var(--rule);
+  overflow: hidden;
+  align-self: center;
+}
+
+.gauge__fill {
+  background: var(--tone);
+  display: block;
+  height: 100%;
+  transform-origin: 0 50%;
+  transition: transform 500ms var(--ease-out);
+}
+
+.gauge__unit {
+  grid-column: 1 / -1;
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  color: var(--ink-2);
+}
+
+
+/* Chips: scenario pickers */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 9px;
+  min-height: 36px;
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 999px;
+  background: var(--paper);
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-2),
+    background var(--dur-2),
+    transform var(--dur-1);
+}
+
+.chip .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--time);
+}
+
+.chip:hover {
+  border-color: var(--ink);
+}
+
+.chip:active {
+  transform: scale(0.97);
+}
+
+.chip[aria-pressed="true"],
+.chip[aria-checked="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.chip[aria-pressed="true"] .icon,
+.chip[aria-checked="true"] .icon {
+  color: var(--coin);
+}
+
+.gauge__note {
+  grid-column: 1 / -1;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+
+.gauge__note:empty {
+  display: none;
+}

@@ -1,107 +1,176 @@
-/**
- * The console: one big button, the era track, and time controls.
- *
- * The button breathes: after a press it reads "installing…" until the new
- * tools have actually landed in the sim, so consequences stay attached to
- * causes even for impatient readers.
- */
+import { h, restartAnimation } from "./dom";
+import { icon } from "../scene/icons";
+import { sound } from "./sound";
 
-import { eraInstalled, type AppStore } from "../app/store";
-import type { Engine } from "../app/engine";
-import { ERAS, currentEra, eraIndex, nextEra } from "../model/eras";
+export interface Control<T> {
+  el: HTMLElement;
+  set(value: T): void;
+}
 
-export function buildControls(
-  store: AppStore,
-  engine: Engine,
-  onPress: () => void,
-): { update(): void } {
-  const button = document.getElementById("invent") as HTMLButtonElement;
-  const track = document.getElementById("era-track") as HTMLOListElement;
-  const timeHost = document.getElementById("time-controls") as HTMLElement;
+let uid = 0;
+const nextId = (p: string) => `${p}-${++uid}`;
 
-  ERAS.forEach((era, i) => {
-    const li = document.createElement("li");
-    li.title = era.name;
-    li.setAttribute("aria-label", `Era ${i + 1}: ${era.name}`);
-    track.appendChild(li);
+export function slider(o: {
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  format: (v: number) => string;
+  ends?: [string, string];
+  onInput: (v: number) => void;
+}): Control<number> {
+  const id = nextId("slider");
+  const out = h("output", { class: "ctl__value", for: id });
+  const input = h("input", { id, class: "ctl__range", type: "range", min: o.min, max: o.max, step: o.step });
+  const paint = (v: number) => {
+    out.textContent = o.format(v);
+    input.style.setProperty("--fill", `${((v - o.min) / (o.max - o.min)) * 100}%`);
+    input.setAttribute("aria-valuetext", o.format(v));
+  };
+  input.value = String(o.value);
+  paint(o.value);
+  input.addEventListener("input", () => {
+    const v = Number(input.value);
+    paint(v);
+    o.onInput(v);
   });
-
-  function pressable(st: ReturnType<AppStore["getState"]>): boolean {
-    if (st.beat !== 0 || st.inscription !== null) return false;
-    if (!nextEra(st.sim.aEngTarget)) return false;
-    return st.pressCount === 0 || eraInstalled(st);
-  }
-
-  button.addEventListener("click", () => {
-    const st = store.getState();
-    if (!pressable(st)) return;
-    engine.press();
-    const era = currentEra(store.getState().sim.aEngTarget);
-    engine.markEvent(era.short, "era");
-    onPress();
-  });
-
-  // time controls
-  const speeds: { id: string; label: string; speed: number; paused?: boolean }[] = [
-    { id: "pause", label: "Pause", speed: 0, paused: true },
-    { id: "play", label: "Play", speed: 4 },
-    { id: "fast", label: "Fast", speed: 12 },
-  ];
-  const label = document.createElement("span");
-  label.className = "label";
-  label.textContent = "time";
-  timeHost.appendChild(label);
-  const timeButtons = speeds.map((s) => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.id = `time-${s.id}`;
-    b.textContent = s.label;
-    b.addEventListener("click", () => {
-      const st = store.getState();
-      if (st.beat !== 0) return; // narration owns the clock during the chain
-      store.setState({ paused: s.paused ?? false, speed: s.paused ? st.speed : s.speed });
-    });
-    timeHost.appendChild(b);
-    return { s, b };
-  });
-
-  let lastLabel = "";
+  const el = h(
+    "div",
+    { class: "ctl ctl--slider" },
+    h("div", { class: "ctl__row" }, h("label", { class: "ctl__label", for: id }, o.label), out),
+    input,
+    o.ends ? h("div", { class: "ctl__ends", "aria-hidden": "true" }, h("span", {}, o.ends[0]), h("span", {}, o.ends[1])) : null,
+  );
   return {
-    update() {
-      const st = store.getState();
-      const next = nextEra(st.sim.aEngTarget);
-      const canPress = pressable(st);
-      // "installing…" applies to the final era too — the tools aren't maxed
-      // out until the last ones have actually landed
-      const installing =
-        st.pressCount > 0 && st.beat === 0 && !st.inscription && !eraInstalled(st);
+    el,
+    set(v) {
+      input.value = String(v);
+      paint(v);
+    },
+  };
+}
 
-      const labelNow = installing
-        ? `${currentEra(st.sim.aEngTarget).name}<span class="sub">installing…</span>`
-        : !next
-          ? `The tools are maxed out<span class="sub">explore the town below</span>`
-          : `${next.button}<span class="sub">${next.flavor}</span>`;
-      if (labelNow !== lastLabel) {
-        button.innerHTML = labelNow;
-        lastLabel = labelNow;
-      }
-      button.disabled = !canPress;
+export interface Option<T> {
+  value: T;
+  label: string;
+}
 
-      const idx = eraIndex(st.sim.aEngTarget);
-      [...track.children].forEach((li, i) => {
-        li.className = i < idx ? "done" : i === idx ? "now" : "";
-        if (i === idx) li.setAttribute("aria-current", "step");
-        else li.removeAttribute("aria-current");
-      });
+/**
+ * Keyboard and ARIA wiring for a row of buttons acting as one choice: radio roles, a roving
+ * tab stop, arrow keys, and a click that only reports real changes. `null` means nothing is
+ * chosen (when the choice lives in another control).
+ */
+export function radioGroup<T>(buttons: HTMLElement[], values: readonly T[], value: T | null, onChange: (v: T) => void): { set(v: T | null): void } {
+  let current = value;
+  const paint = () =>
+    buttons.forEach((b, i) => {
+      const on = values[i] === current;
+      b.setAttribute("role", "radio");
+      b.setAttribute("aria-checked", String(on));
+      b.tabIndex = on || (current === null && i === 0) ? 0 : -1;
+    });
+  const choose = (i: number, focus: boolean) => {
+    const v = values[i];
+    if (v === undefined) return;
+    if (focus) buttons[i]?.focus();
+    if (v === current) return;
+    current = v;
+    paint();
+    sound.tick();
+    onChange(v);
+  };
+  buttons.forEach((b, i) => {
+    b.addEventListener("click", () => choose(i, false));
+    b.addEventListener("keydown", (e) => {
+      const delta = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+      if (!delta) return;
+      e.preventDefault();
+      choose((i + delta + buttons.length) % buttons.length, true);
+    });
+  });
+  paint();
+  return {
+    set(v) {
+      current = v;
+      paint();
+    },
+  };
+}
 
-      const chainOn = st.beat !== 0;
-      for (const { s, b } of timeButtons) {
-        b.disabled = chainOn;
-        const active = st.paused
-          ? s.paused === true
-          : !s.paused && (s.id === "fast" ? st.speed >= 8 : st.speed < 8);
-        b.setAttribute("aria-pressed", String(active));
-      }
+/** A pill-shaped radio group with a visible label. */
+export function segmented<T extends string | number>(o: {
+  label: string;
+  options: Option<T>[];
+  value: T | null;
+  onChange: (v: T) => void;
+  compact?: boolean;
+}): Control<T | null> {
+  const labelId = nextId("seg");
+  const buttons = o.options.map((opt) => h("button", { type: "button", class: "seg__opt" }, opt.label));
+  const group = radioGroup(
+    buttons,
+    o.options.map((opt) => opt.value),
+    o.value,
+    o.onChange,
+  );
+  const el = h(
+    "div",
+    { class: `ctl ctl--seg${o.compact ? " ctl--compact" : ""}` },
+    h("span", { class: "ctl__label", id: labelId }, o.label),
+    h("div", { class: "seg", role: "radiogroup", "aria-labelledby": labelId }, ...buttons),
+  );
+  return { el, set: group.set };
+}
+
+export function toggle(o: { label: string; value: boolean; onChange: (v: boolean) => void; hint?: string }): Control<boolean> {
+  let on = o.value;
+  const btn = h(
+    "button",
+    { type: "button", class: "switch", role: "switch" },
+    h("span", { class: "switch__track", "aria-hidden": "true" }, h("span", { class: "switch__thumb" })),
+    h("span", { class: "switch__label" }, o.label),
+  );
+  const paint = () => btn.setAttribute("aria-checked", String(on));
+  btn.addEventListener("click", () => {
+    on = !on;
+    paint();
+    sound.tick();
+    o.onChange(on);
+  });
+  paint();
+  const el = h("div", { class: "ctl ctl--switch" }, btn, o.hint ? h("p", { class: "ctl__hint" }, o.hint) : null);
+  return {
+    el,
+    set(v) {
+      on = v;
+      paint();
+    },
+  };
+}
+
+/** The big button. Pips under it count inventions so far. */
+export function inventButton(o: { max: number; onPress: () => void; doneLabel: string }): {
+  el: HTMLElement;
+  setCount(n: number): void;
+} {
+  const label = "Invent a better machine";
+  const gear = icon("gear", "invent__gear");
+  const text = h("span", { class: "invent__label" }, label);
+  const button = h("button", { type: "button", class: "invent" }, gear, text);
+  const pips = Array.from({ length: o.max }, () => h("span", { class: "invent__pip" }));
+  button.addEventListener("click", () => {
+    restartAnimation(gear, "is-turning");
+    o.onPress();
+  });
+  return {
+    el: h("div", { class: "invent-wrap" }, button, h("span", { class: "invent__pips", "aria-hidden": "true" }, ...pips)),
+    setCount(n) {
+      const done = n >= o.max;
+      pips.forEach((p, i) => p.classList.toggle("is-on", i < n));
+      button.disabled = done;
+      text.textContent = done ? o.doneLabel : label;
+      button.setAttribute("aria-label", done ? o.doneLabel : `${label} (${n} of ${o.max} so far)`);
     },
   };
 }

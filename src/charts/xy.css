@@ -1,0 +1,94 @@
+/* XY charts */
+
+.xy {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font-ui);
+}
+
+.xy__grid line {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.xy__grid .xy__axis {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.xy__tick {
+  font-size: 12px;
+  fill: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.xy__tick--y {
+  text-anchor: end;
+}
+
+.xy__tick--x {
+  text-anchor: middle;
+}
+
+.xy__axis-label {
+  font-size: 12px;
+  fill: var(--ink-2);
+  text-anchor: middle;
+}
+
+.xy__axis-label--y {
+  text-anchor: start;
+}
+
+.xy__line {
+  stroke: var(--tone);
+  fill: none;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: d 500ms var(--ease-out);
+}
+
+.xy__line.is-dashed {
+  stroke-dasharray: 5 5;
+  stroke-width: 2;
+}
+
+.xy__band {
+  fill: color-mix(in oklch, var(--tone) 65%, transparent);
+  stroke: var(--paper);
+  stroke-width: 1;
+  transition: d 500ms var(--ease-out);
+}
+
+.xy__end {
+  fill: var(--tone-ink);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.xy__cursor {
+  opacity: 0;
+  transition:
+    transform 400ms var(--ease-out),
+    opacity 200ms;
+}
+
+.xy__cursor.is-on {
+  opacity: 1;
+}
+
+.xy__cursor line {
+  stroke: var(--coin-ink);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+
+.xy__cursor-text {
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--coin-ink);
+  text-anchor: middle;
+}

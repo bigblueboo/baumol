@@ -1,115 +1,86 @@
-/**
- * Tunable parameters for the town economy.
- *
- * The model is a two-sector Baumol toy: a "progressive" sector (software,
- * where tools multiply output per hour) and a "stagnant" sector (babysitting,
- * where one hour of care takes one hour, always). Workers share one labor
- * market; that link is what spreads the factory's wage gains into the care
- * sector's prices.
- */
-
-export type Distribution = "shared" | "concentrated";
-
-export interface Params {
-  /** Total workers in town (engineers + sitters + trainees). */
-  totalWorkers: number;
-  /** Paid hours per worker per week. */
-  hoursPerWeek: number;
-  /** Starting wage for everyone, $/hr. Circa-1999 parable money. */
-  baseWage: number;
-
-  // --- Productivity ---
-  /** Fraction of productivity gains that reach engineer wages (0..1). */
-  passThrough: number;
-
-  // --- Labor market ---
-  /** How readily sitters retrain as engineers (flow rate per week at full gap). */
-  mobility: number;
-  /** Weeks of unpaid retraining before a sitter can start engineering. */
-  trainingWeeks: number;
-
-  // --- Demand ---
-  /**
-   * CES elasticity of substitution between software and babysitting.
-   * <1: poor substitutes (care spending share rises as it gets pricier).
-   * =1: shares hold. >1: families substitute away from human care.
-   */
-  sigma: number;
-  /** Income elasticity of care demand (>1: richer town wants relatively more care). */
-  incomeElasticity: number;
-  /** Kid-hours per week the town needs no matter the price (parents work). */
-  needFloorShare: number;
-
-  // --- Institutions / policies ---
-  /** Cap on the sitter hourly rate, $/hr. null = market rate. */
-  rateCap: number | null;
-  /** Kids per sitter. 1 = one-on-one. Raising it batches care. */
-  kidsPerSitter: number;
-  /** Fraction of each sitter-hour bill paid by the town (0..0.95). */
-  subsidyRate: number;
-  /** Whether the robo-sitter app is on the market. */
-  roboSitter: boolean;
-  /** How readily families accept the robo-sitter (0..1). */
-  roboAcceptance: number;
-
-  // --- Distribution ---
-  /** Who gets the productivity dividend. */
-  distribution: Distribution;
-}
-
-export const DEFAULT_PARAMS: Params = {
-  totalWorkers: 24,
-  hoursPerWeek: 40,
-  baseWage: 12,
-
-  passThrough: 1,
-
-  mobility: 0.28,
-  trainingWeeks: 8,
-
-  sigma: 0.55,
-  incomeElasticity: 1.1,
-  needFloorShare: 0.5,
-
-  rateCap: null,
-  kidsPerSitter: 1,
-  subsidyRate: 0,
-  roboSitter: false,
-  roboAcceptance: 0.5,
-
-  distribution: "shared",
-};
-
-/** Clamp helper used across the model. */
-export function clamp(x: number, lo: number, hi: number): number {
-  return Math.min(hi, Math.max(lo, x));
-}
-
 import { z } from "zod";
 
-/** Bounds that keep every derived quantity finite and meaningful. */
-const paramsSchema = z.object({
-  totalWorkers: z.number().min(2).max(200),
-  hoursPerWeek: z.number().min(1).max(80),
-  baseWage: z.number().min(1).max(1000),
-  passThrough: z.number().min(0).max(1),
-  mobility: z.number().min(0).max(1),
-  trainingWeeks: z.number().min(0).max(104),
-  sigma: z.number().min(0.1).max(4),
-  incomeElasticity: z.number().min(0.5).max(2),
-  needFloorShare: z.number().min(0).max(1),
-  rateCap: z.number().min(1).max(1e6).nullable(),
-  kidsPerSitter: z.number().int().min(1).max(8),
-  subsidyRate: z.number().min(0).max(0.9),
-  roboSitter: z.boolean(),
-  roboAcceptance: z.number().min(0).max(1),
-  distribution: z.enum(["shared", "concentrated"]),
-});
+/**
+ * The valid range of every numeric knob. The schema is built from this table and the lab's
+ * sliders read it too, so a control can never offer a value the model would reject.
+ */
+export const RANGES = {
+  goodsGrowth: [0, 0.2],
+  serviceGrowth: [0, 0.1],
+  mobility: [0, 1],
+  trainingYears: [0, 5],
+  wagePassThrough: [0, 1],
+  substitutability: [0, 2],
+  incomeSensitivity: [0, 2],
+  essentialFloor: [0, 1],
+  subsidy: [0, 0.9],
+  caseload: [1, 4],
+  automation: [0, 0.9],
+  concentration: [0, 1],
+} as const;
+export type NumKey = keyof typeof RANGES;
+
+const ranged = (k: NumKey) => z.number().min(RANGES[k][0]).max(RANGES[k][1]);
 
 /**
- * Validate params from any outside source (UI knobs, the window.__town hook).
- * Throws with a readable message rather than letting a bad value reach the sim.
+ * Every knob the economy exposes. Figures pin most of these; the Lab exposes all of them.
+ * Ranges are enforced by the schema so URL-supplied state can never push the model
+ * into a region it was not calibrated for.
  */
-export function checkParams(p: Params): Params {
-  return paramsSchema.parse(p);
+export const ParamsSchema = z.object({
+  // Productivity
+  goodsGrowth: ranged("goodsGrowth"),
+  serviceGrowth: ranged("serviceGrowth"),
+
+  // Labor market
+  sharedLaborMarket: z.boolean(),
+  mobility: ranged("mobility"),
+  trainingYears: ranged("trainingYears"),
+  wagePassThrough: ranged("wagePassThrough"),
+
+  // Demand
+  substitutability: ranged("substitutability"),
+  incomeSensitivity: ranged("incomeSensitivity"),
+  essentialFloor: ranged("essentialFloor"),
+
+  // Institutions
+  funding: z.enum(["market", "public"]),
+  subsidy: ranged("subsidy"),
+  budgetFrozen: z.boolean(),
+  wageCap: z.boolean(),
+  caseload: ranged("caseload"),
+  automation: ranged("automation"),
+  qualityStandard: z.boolean(),
+
+  // Distribution
+  concentration: ranged("concentration"),
+  progressiveTax: z.boolean(),
+});
+
+export type Params = z.infer<typeof ParamsSchema>;
+export type Funding = Params["funding"];
+
+const DEFAULT_PARAMS: Params = {
+  goodsGrowth: 0,
+  serviceGrowth: 0,
+  sharedLaborMarket: true,
+  mobility: 0.6,
+  trainingYears: 0.5,
+  wagePassThrough: 1,
+  substitutability: 1,
+  incomeSensitivity: 1,
+  essentialFloor: 0,
+  funding: "market",
+  subsidy: 0,
+  budgetFrozen: false,
+  wageCap: false,
+  caseload: 1,
+  automation: 0,
+  qualityStandard: false,
+  concentration: 0,
+  progressiveTax: false,
+};
+
+export function makeParams(overrides: Partial<Params> = {}): Params {
+  return ParamsSchema.parse({ ...DEFAULT_PARAMS, ...overrides });
 }

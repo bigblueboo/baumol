@@ -1,0 +1,826 @@
+/* ── The town drawing ─────────────────────────────────── */
+
+.town {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  font-family: var(--font-ui);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon .fill {
+  fill: color-mix(in oklch, currentColor 22%, transparent);
+}
+
+.icon .accent {
+  stroke-width: 2.2;
+}
+
+/* Backdrop */
+.sky {
+  fill: var(--sky);
+}
+.sun {
+  fill: var(--coin);
+  opacity: 0.55;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sun {
+    opacity: 0.9;
+  }
+}
+.cloud path {
+  fill: var(--paper);
+  stroke: var(--rule-strong);
+  stroke-width: 1.2;
+}
+.cloud--a {
+  animation: drift 90s linear infinite;
+  transform: translate(160px, 52px);
+}
+.cloud--b {
+  animation: drift 130s linear infinite -60s;
+  transform: translate(560px, 30px);
+}
+@keyframes drift {
+  from {
+    transform: translate(-80px, 40px);
+  }
+  to {
+    transform: translate(1060px, 40px);
+  }
+}
+.hill--far {
+  fill: var(--hill-far);
+}
+.hill--near {
+  fill: var(--hill-near);
+}
+.ground {
+  fill: var(--ground);
+}
+.ground__edge {
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.road {
+  fill: var(--road);
+}
+.road__dash {
+  stroke: var(--paper);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+/* Buildings: ink outlines, flat riso fills */
+.bldg-body {
+  fill: var(--paper-deep);
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.bldg-roof {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.bldg-roof--things {
+  fill: var(--things-wash);
+}
+.bldg-roof--time {
+  fill: var(--time-wash);
+}
+.bldg-trim {
+  fill: var(--ink);
+}
+.bldg-line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.bldg-line--faint {
+  stroke: var(--rule-strong);
+  stroke-width: 1.2;
+}
+.bldg-line--code {
+  stroke: var(--time);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.bldg-glass {
+  stroke: var(--time);
+  stroke-width: 3;
+  opacity: 0.55;
+}
+.bldg-window {
+  fill: var(--window);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.bldg-window--lit {
+  fill: var(--window-lit);
+}
+.bldg-door {
+  fill: var(--things-wash);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.bldg-door--time {
+  fill: var(--time);
+}
+.bldg-knob {
+  fill: var(--coin);
+}
+
+.plank__board {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.plank__text {
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  fill: var(--ink);
+}
+.plank--things .plank__icon {
+  color: var(--things);
+}
+.plank--time .plank__icon {
+  color: var(--time);
+}
+
+/* Factory machinery */
+.gear {
+  color: var(--things);
+}
+.gear .fill {
+  fill: var(--things-wash);
+}
+.tier {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: scale(0.6);
+  transition:
+    opacity var(--dur-3) var(--ease-out),
+    transform var(--dur-3) var(--ease-out);
+}
+.tier.is-on {
+  opacity: 1;
+  transform: none;
+}
+.arm__seg {
+  stroke: var(--things);
+  stroke-width: 5;
+  stroke-linecap: round;
+  fill: none;
+}
+.arm__claw {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.arm__joint,
+.arm__base {
+  fill: var(--ink);
+}
+.piston__rod {
+  fill: var(--ink-2);
+}
+.piston__head {
+  fill: var(--things);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.solar {
+  fill: var(--time);
+  opacity: 0.7;
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+.dish__bowl {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.beacon {
+  fill: var(--things);
+  animation: blink 1.1s steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+.belt {
+  fill: var(--ink-2);
+}
+.belt__roller {
+  fill: var(--paper);
+}
+.bin {
+  fill: var(--paper-deep);
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.pile__item {
+  color: var(--things);
+  opacity: 0;
+  transition: opacity var(--dur-2);
+}
+.pile__item.is-on {
+  opacity: 1;
+}
+.belt__item {
+  color: var(--things);
+}
+.puff circle {
+  fill: var(--paper);
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+
+/* Service building */
+.clock__face {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 2.4;
+}
+.clock__ticks {
+  stroke: var(--ink);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.clock__minute {
+  stroke: var(--time);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.clock__hour {
+  stroke: var(--ink);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+.clock__pin {
+  fill: var(--things);
+}
+
+.seat__human,
+.seat__robot,
+.seat__client {
+  opacity: 0;
+  transition: opacity var(--dur-3);
+}
+.seat__human.is-on,
+.seat__robot.is-on,
+.seat__client.is-on {
+  opacity: 1;
+}
+.seat__body {
+  fill: var(--time);
+}
+.seat__head,
+.seat__client-head {
+  fill: var(--skin);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.seat__client-body {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.seat__robot {
+  color: var(--things);
+}
+
+.hiring,
+.public-banner {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transform: rotate(-8deg) translateY(-6px);
+  transition:
+    opacity var(--dur-2),
+    transform var(--dur-3) var(--ease-out);
+}
+.hiring.is-on,
+.public-banner.is-on {
+  opacity: 1;
+  transform: none;
+}
+.hiring.is-on {
+  animation: sway 2.4s var(--ease-in-out) infinite;
+}
+@keyframes sway {
+  50% {
+    transform: rotate(3deg);
+  }
+}
+.hiring__card {
+  fill: var(--coin);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.hiring__string {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.hiring__text {
+  font-size: 10px;
+  font-weight: 700;
+  text-anchor: middle;
+  letter-spacing: 0.06em;
+  fill: var(--on-coin);
+}
+.public-banner__ribbon {
+  fill: var(--coin);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.public-banner__text {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-anchor: middle;
+  letter-spacing: 0.08em;
+  fill: var(--on-coin);
+}
+
+/* Facade features */
+.pole {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.pole__stripes {
+  fill: url(#pole-stripes);
+  stroke: none;
+}
+.awning {
+  fill: var(--things-wash);
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.bush {
+  fill: var(--hill-near);
+  stroke: var(--ink);
+  stroke-width: 1.4;
+}
+.flowerbox {
+  fill: var(--things);
+}
+.bell,
+.flag {
+  fill: var(--coin);
+  stroke: var(--ink);
+  stroke-width: 1.4;
+}
+.column {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.curtain {
+  fill: var(--things-wash);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.lamp {
+  fill: none;
+  stroke: var(--coin-ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.neon {
+  fill: var(--paper);
+  stroke: var(--things);
+  stroke-width: 2.5;
+}
+.neon__text {
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+  letter-spacing: 0.2em;
+  fill: var(--things);
+}
+.medcross {
+  stroke: var(--things);
+  stroke-width: 8;
+}
+.rainbow {
+  fill: none;
+  stroke-width: 6;
+}
+.rainbow--a {
+  stroke: var(--things);
+}
+.rainbow--b {
+  stroke: var(--coin);
+}
+.block--a {
+  fill: var(--time);
+  stroke: var(--ink);
+}
+.block--b {
+  fill: var(--coin);
+  stroke: var(--ink);
+}
+.beam__cone {
+  fill: var(--coin);
+  opacity: 0.28;
+}
+
+/* Noticeboard and price tag */
+.board__panel {
+  fill: var(--board);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.board__post {
+  stroke: var(--ink);
+  stroke-width: 6;
+}
+.board__title {
+  fill: var(--coin);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-anchor: middle;
+}
+.board__status {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-anchor: middle;
+  fill: oklch(0.86 0.02 84 / 0.75);
+}
+.board__status.is-alert {
+  fill: var(--things);
+}
+.board__rule {
+  stroke: color-mix(in oklch, var(--paper) 25%, transparent);
+  stroke-width: 1;
+}
+.board__icon .fill {
+  fill: color-mix(in oklch, currentColor 30%, transparent);
+}
+.board__num {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 38px;
+  text-anchor: end;
+  font-variant-numeric: lining-nums tabular-nums;
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+}
+.is-flipping {
+  animation: flip 240ms var(--ease-out);
+}
+@keyframes flip {
+  0% {
+    transform: scaleY(0.45);
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.tag {
+  transform-origin: 0 -46px;
+}
+.tag.is-swinging {
+  animation: swing 1.4s var(--ease-out);
+}
+@keyframes swing {
+  0% {
+    transform: rotate(0);
+  }
+  18% {
+    transform: rotate(9deg);
+  }
+  42% {
+    transform: rotate(-5deg);
+  }
+  68% {
+    transform: rotate(2deg);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+.tag__string {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+}
+.tag__card {
+  fill: var(--coin);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.tag__eq {
+  font-family: var(--font-display);
+  font-size: 22px;
+  fill: var(--on-coin);
+  text-anchor: middle;
+}
+.tag__num {
+  font-family: var(--font-display);
+  font-weight: 650;
+  font-size: 26px;
+  fill: var(--on-coin);
+  text-anchor: middle;
+  font-variant-numeric: lining-nums;
+}
+/* Gate across the road when workers can't switch */
+.gate__post {
+  fill: var(--ink);
+}
+.gate__bar {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+.gate__stripes {
+  stroke: var(--things);
+  stroke-width: 5;
+}
+.gate__pivot {
+  transform: rotate(-88deg);
+  transition: transform 700ms var(--ease-out);
+}
+.gate.is-closed .gate__pivot {
+  transform: rotate(0deg);
+}
+.gate {
+  opacity: 0;
+  transition: opacity var(--dur-2);
+}
+.gate.is-closed {
+  opacity: 1;
+}
+/* Queue */
+.queuer {
+  opacity: 0;
+  transition: opacity var(--dur-3);
+  transition-delay: calc(var(--i) * 60ms);
+}
+.queuer.is-on {
+  opacity: 1;
+}
+.queuer__body {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.4;
+}
+.queuer__head {
+  fill: var(--skin);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}
+.queuer__cane {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+}
+.queue__sign {
+  opacity: 0;
+  transition: opacity var(--dur-2);
+}
+.queue__sign.is-on {
+  opacity: 1;
+}
+.queue__card {
+  fill: var(--things);
+}
+.queue__text {
+  fill: var(--paper);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+
+/* People */
+.person__leg {
+  stroke: var(--ink);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+.person__body {
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  transition: fill 600ms;
+}
+.person--goods .person__body {
+  fill: var(--things);
+}
+.person--service .person__body {
+  fill: var(--time);
+}
+.person__head {
+  stroke: var(--ink);
+  stroke-width: 1.3;
+}
+.skin-a {
+  fill: oklch(0.82 0.06 65);
+}
+.skin-b {
+  fill: oklch(0.66 0.08 55);
+}
+.skin-c {
+  fill: oklch(0.5 0.07 45);
+}
+.person__hair {
+  fill: var(--ink);
+}
+.person__cap {
+  fill: var(--things-ink);
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0;
+  transition: opacity 400ms;
+}
+.person--goods .person__cap {
+  opacity: 1;
+}
+
+.bubble {
+  opacity: 0;
+  transform: translateY(6px) scale(0.6);
+  transform-box: fill-box;
+  transform-origin: 20% 100%;
+  transition:
+    opacity var(--dur-2),
+    transform var(--dur-3) var(--ease-out);
+}
+.bubble.is-shown {
+  opacity: 1;
+  transform: none;
+}
+.bubble__cloud,
+.bubble__dot {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.3;
+}
+.bubble__text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  fill: var(--things-ink);
+  dominant-baseline: middle;
+}
+.bubble__icon {
+  color: var(--things);
+}
+
+/* Morph between scenarios: old art folds down, new art rises up like a pop-up book. */
+.town__layer {
+  transform-box: view-box;
+  transform-origin: 50% 300px;
+  transition:
+    transform 700ms var(--ease-out),
+    opacity 500ms;
+}
+.town__layer.is-entering {
+  transform: scaleY(0.02);
+  opacity: 0;
+  transition: none;
+}
+.town__layer.is-leaving {
+  transform: scaleY(0.02);
+  opacity: 0;
+  transition:
+    transform 420ms var(--ease-in-out),
+    opacity 420ms;
+}
+
+/* Compact composition: the noticeboard's numbers as a strip under the drawing */
+.town-wrap {
+  position: relative;
+}
+
+.town-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 10px;
+  padding: 7px 10px;
+  background: var(--board);
+  color: oklch(0.96 0.02 84);
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.town-strip__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.town-strip__item .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.town-strip__item small {
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  opacity: 0.75;
+}
+
+.town-strip__item--price {
+  background: var(--coin);
+  color: var(--on-coin);
+  padding: 0 8px;
+  border-radius: 3px;
+}
+
+/* Chalk on the board: the blue ink is lifted so it reads on the dark panel. */
+.board .tone-time,
+.town-strip .tone-time {
+  --tone: oklch(0.78 0.1 255);
+}
+
+.board__icon,
+.town-strip__item[class*="tone-"] {
+  color: var(--tone);
+}
+
+.board__num {
+  fill: var(--tone);
+}
+
+.tag__icon {
+  color: var(--tone-ink);
+}
+
+/* The wage gap, bracketed beside the board while it's open */
+.gap {
+  opacity: 0;
+  transition: opacity var(--dur-2);
+}
+.gap.is-on {
+  opacity: 1;
+}
+.gap__bracket {
+  fill: none;
+  stroke: var(--things);
+  stroke-width: 2.5;
+}
+.gap__text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  fill: var(--things-ink);
+  dominant-baseline: middle;
+}
+
+.town-strip__rules {
+  flex-basis: 100%;
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--things);
+}
+
+.town-strip__rules:empty {
+  display: none;
+}
+
+.ladder {
+  fill: none;
+  stroke: var(--coin-ink);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+.toolbox {
+  fill: var(--things);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.brass {
+  fill: var(--coin);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+}

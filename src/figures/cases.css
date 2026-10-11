@@ -1,0 +1,100 @@
+.case-picker {
+  margin-bottom: clamp(14px, 2.4vw, 22px);
+}
+
+.case {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(18px, 3vw, 40px);
+  align-items: start;
+}
+
+@container (max-width: 760px) {
+  .case {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* The eight chips scroll sideways rather than stacking. */
+  .case-picker .chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .case-picker .chip {
+    flex: none;
+  }
+}
+
+.case__charts {
+  display: grid;
+  gap: 18px;
+}
+
+.case__chart {
+  margin: 0;
+}
+
+.case__title {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.case__label {
+  margin: 14px 0 2px;
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.case__intuition {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step-0);
+  line-height: 1.45;
+}
+
+.case__model,
+.case__evidence {
+  margin: 0;
+  font-size: calc(var(--step-0) * 0.95);
+  line-height: 1.55;
+}
+
+.case__sources {
+  margin: 10px 0 0;
+  padding-left: 1.2em;
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  color: var(--ink-2);
+}
+
+.case__sources li + li {
+  margin-top: 4px;
+}
+
+.case__lab-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 16px 0 0;
+}
+
+.case__lab-note {
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  color: var(--ink-3);
+}
+
+.case__lab {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: var(--step--1);
+}

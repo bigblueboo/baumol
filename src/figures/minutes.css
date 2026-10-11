@@ -1,0 +1,225 @@
+/* Fig 2: dials, equation, money */
+
+.dials {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(10px, 3vw, 28px);
+}
+
+.dial-card {
+  display: grid;
+  grid-template-columns: minmax(70px, 120px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+@container (max-width: 560px) {
+  .dial-card {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+  }
+  .dial-card .dial {
+    width: 90px;
+  }
+}
+
+.dial {
+  width: 100%;
+  height: auto;
+}
+
+.dial__face {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.dial__ticks {
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.dial__pin {
+  fill: var(--ink);
+}
+
+.dial-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dial-card__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+
+.dial-card__label .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.dial-card__num {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--step-3);
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+}
+
+.dial-card__unit {
+  font-size: var(--step--1);
+  color: var(--ink-2);
+  font-style: italic;
+}
+
+.eq {
+  margin: clamp(18px, 3vw, 28px) 0 0;
+  padding: 16px 0;
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-display);
+}
+
+.eq__line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  font-size: var(--step-1);
+}
+
+.eq__line--sub {
+  margin-top: 10px;
+  padding-left: clamp(0px, 6vw, 80px);
+}
+
+.eq__term {
+  font-style: italic;
+}
+
+.eq__op {
+  color: var(--ink-3);
+}
+
+.eq__num {
+  font-weight: 650;
+  font-variant-numeric: lining-nums;
+}
+
+.eq__num.eq__num--result {
+  font-size: var(--step-2);
+  color: var(--ink);
+  background: var(--coin-wash);
+  padding: 0 8px;
+}
+
+.eq__frac {
+  display: inline-grid;
+  justify-items: center;
+  line-height: 1.1;
+  min-width: 3em;
+}
+
+.eq__bar {
+  width: 100%;
+  height: 1.5px;
+  background: var(--ink);
+  margin: 3px 0;
+}
+
+.eq__note {
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  color: var(--ink-2);
+  max-width: 18rem;
+}
+
+.money {
+  margin-top: clamp(18px, 3vw, 28px);
+}
+
+.money__title {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 560;
+  margin: 0 0 4px;
+}
+
+.money__intro {
+  margin: 0 0 12px;
+  color: var(--ink-2);
+  font-size: var(--step--1);
+  font-family: var(--font-ui);
+}
+
+.tagcards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.tagcard {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-top: 4px solid var(--tone);
+}
+
+.tagcard__label {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+
+.tagcard__num {
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-size: var(--step-2);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.tagcard__delta {
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  color: var(--ink-2);
+}
+
+.money__lock {
+  margin: 12px 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+.money__lock .icon {
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.15em;
+  margin-right: 0.35em;
+  color: var(--things-ink);
+}
+
+@container (max-width: 520px) {
+  .tagcards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.dial__wedge {
+  fill: var(--tone);
+  opacity: 0.85;
+}
+
+.dial-card__num,
+.eq__num {
+  color: var(--tone-ink);
+}

@@ -4,237 +4,386 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>One Hour Is Still One Hour</title>
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23f6f0e4' stroke='%233a332a' stroke-width='2.5'/%3E%3Cline x1='16' y1='16' x2='16' y2='7' stroke='%23c25a34' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='16' y1='16' x2='22' y2='19' stroke='%233a332a' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E"
-    />
     <meta
       name="description"
-      content="A small-town playground for Baumol's cost disease: press one button, make software engineers wildly productive, and watch what happens to the babysitter's rate."
+      content="An interactive explainer on Baumol's cost disease: why an hour of human attention gets more expensive as machines make everything else cheaper."
     />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..800,0..100;1,9..144,300..800,0..100&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" src="/src/main.ts"></script>
   </head>
   <body>
-    <main class="page">
-      <header class="masthead">
-        <p class="kicker">A playground for Baumol's cost disease</p>
-        <h1>One hour is still one&nbsp;hour</h1>
-        <p class="dek">
-          Since 2000, the U.S. price index for televisions has fallen about
-          <strong>97 percent</strong>. The index for day care has risen about
-          <strong>123 percent</strong>, against 77 percent inflation overall.
-          This page is about why those paths split. By the end, you will have
-          caused the split yourself.
-        </p>
-      </header>
+    <a class="skip" href="#lab">Skip to the lab</a>
+    <header class="masthead">
+      <span class="masthead__mark" aria-hidden="true"></span>
+      <span class="masthead__title">One Hour Is Still One Hour</span>
+      <button class="sound-toggle" type="button" data-sound-toggle aria-pressed="false">
+        <span class="sound-toggle__icon" aria-hidden="true"></span><span class="sound-toggle__label">Sound off</span>
+      </button>
+    </header>
 
-      <section class="explainer" aria-label="Why prices split in two">
-        <h2>Two kinds of prices</h2>
-        <p>
-          Line up a selection of consumer-price categories from the past
-          quarter-century and the extremes split along one line. Where
-          technology multiplied what one worker can produce, prices fell or
-          lagged inflation. Where the product stayed mostly a person's hour —
-          a nurse's, a professor's, a babysitter's — prices outran it.
-        </p>
-        <figure class="intro-chart" id="intro-chart">
+    <main>
+      <article class="essay">
+        <header class="article-head">
+          <p class="article-head__section">Economics</p>
+          <h1 class="article-head__title">One Hour Is Still One Hour</h1>
+          <p class="article-head__dek">
+            Machines keep making things cheaper. They can't make an hour shorter. Why care, teaching, live music and
+            your plumber keep getting more expensive, explained with a small town you can run.
+          </p>
+          <p class="article-head__byline">
+            <span>An interactive explainer</span>
+            <time datetime="2026-10-10">Oct. 10, 2026</time>
+            <span>About 20 minutes</span>
+          </p>
+        </header>
+
+        <figure class="lead-art">
+          <div data-figure="hero" aria-hidden="true"></div>
           <figcaption>
-            Change in
-            <a
-              href="https://www.bls.gov/cpi/"
-              target="_blank"
-              rel="noopener"
-              >U.S. CPI-U component indexes</a
-            >, 2000 → 2023 annual averages, nearest percent. These are
-            quality-adjusted price indexes — the television figure reflects
-            better sets as well as lower tags — and none of them are wages.
-            Series IDs in the table.
+            In the factory, what one worker makes in an hour keeps doubling. In the care house, an hour of care is still
+            sixty minutes.
           </figcaption>
         </figure>
 
-        <h2>The usual suspects aren't the whole story</h2>
-        <p>
-          <strong>Profit seeking?</strong> Every seller would prefer a higher
-          price. A motive everyone shares can't explain opposite price paths
-          on its own — though shifts in competition and market power
-          certainly move particular bills.
-        </p>
-        <p>
-          <strong>Administration?</strong> It genuinely adds to hospital and
-          tuition bills. It can't be the mechanism in the stripped-down case
-          below, where a sitter watches a kid with no administrator in sight.
-        </p>
-        <p>
-          <strong>Quality change?</strong> It matters, and the television
-          index is adjusted for it. But one-on-one care resists the question:
-          an hour of watching a kid still takes an hour.
-        </p>
-        <p>
-          A deeper mechanism dates to 1965, when the economists William
-          Baumol and William Bowen asked why string quartets kept getting
-          more expensive to stage. A short quartet passage takes the same
-          forty musician-minutes it took in Mozart's day, yet ensembles must
-          raise pay anyway, to keep musicians who could instead earn a living
-          in industries where an hour produces more every year.
-          Baumol and Bowen described what that gap does to prices; it later
-          became known as <em>cost disease</em>.
-        </p>
-        <p>
-          The research began as a practical worry. In the early 1960s the
-          Twentieth Century Fund, a New York think tank, commissioned Baumol
-          and Bowen to explain why American orchestras and theaters ran
-          chronic deficits however well they were managed. Their answer,
-          published in a 1965 paper and a 1966 book, was that the gap was
-          structural and would keep widening, so philanthropy or subsidy
-          would have to widen with it. Baumol spent the next half-century
-          extending the diagnosis, to city budgets in 1967 and eventually to
-          health care and education. The medical name arrived along the way:
-          economists took to calling the pattern a disease for how it spreads
-          and resists cure, and Baumol embraced the label, titling his 2012
-          book simply <em>The Cost Disease</em>. He kept insisting on its
-          hopeful corollary, though — the same productivity growth that makes
-          the sitter look expensive leaves the town, in total, richer than
-          ever. The ledger below keeps score of exactly that.
-        </p>
+        <section class="chapter chapter--lede">
+          <p>
+            Over the past half-century, televisions, phones and clothes have become cheaper next to almost everything
+            else, while a year of college, a day of child care, a night at the hospital and a seat at the symphony have
+            become dearer. The usual suspects are greed, regulation and waste, and each plays some part. But there is a
+            simpler force underneath, first worked out by the economist William Baumol in the 1960s, and
+            <a href="https://papers.ssrn.com/abstract=3392666">some economists argue</a> it explains most of the
+            pattern. You can watch it happen in a town of twelve people.
+          </p>
+        </section>
 
-        <h2>Watch it happen in a town of 24 people</h2>
-        <p>
-          The hard part about seeing cost disease in the wild is everything
-          piled on top of it: insurance, licensing, rent, subsidies. So strip
-          all of that away. Below is a town with exactly two jobs.
-          <span class="studio-ink">Software</span>, where a machine can
-          multiply what an engineer ships in an hour. And
-          <span class="care-ink">babysitting</span>, where one sitter watches
-          one kid and an hour is an hour. It's 1999 and both jobs pay $12.
-          You control a single button, and it only ever improves the software
-          side. Press it, and watch the price of the thing you didn't touch.
-        </p>
-      </section>
+        <section class="chapter" id="town">
+          <h2>A town with two jobs</h2>
+          <p>
+            This town has two places to work. At the hat works, a hatter makes two hats an hour. At the barbershop, a
+            barber gives two haircuts an hour, thirty minutes apiece.
+          </p>
+          <p>
+            Anyone in town can do either job, so the two jobs have to pay the same: two hats an hour. A barber who earns
+            two hats an hour and gives two haircuts an hour must charge one hat per haircut. That is the whole economy.
+          </p>
+          <p>Now somebody improves the hat press.</p>
+        </section>
 
-      <section class="stage-wrap" aria-label="The town">
-        <div id="duel" class="duel" aria-label="The two hourly prices"></div>
-        <div
-          id="scene-host"
-          tabindex="0"
-          role="region"
-          aria-label="The town scene. On narrow screens, scroll sideways to pan between the studio and the home."
-        ></div>
-        <p id="caption" class="caption" aria-live="polite"></p>
-      </section>
+        <figure class="plate plate--wide" data-figure="hats"></figure>
 
-      <section class="console" aria-label="Controls">
-        <div class="console-main">
-          <button id="invent" class="invent" type="button"></button>
-          <ol id="era-track" class="era-track" aria-label="Tool eras"></ol>
-        </div>
-        <div id="time-controls" class="time-controls" role="group" aria-label="Time"></div>
-      </section>
+        <section class="chapter">
+          <p>
+            Press it a few times and watch the order of events. The press speeds up first, and the hat works can pay
+            more straight away. The barbershop's pay doesn't move, and the barbers notice. Some of them walk. Short of
+            staff, the shop eventually raises its wage to get them back, and it has to raise its price to cover the
+            wage.
+          </p>
+          <p>
+            After three inventions a haircut costs eight hats. The barber did not slow down. The scissors are the same
+            scissors, and a haircut still takes thirty minutes. Baumol and his colleague William Bowen first made this
+            argument in 1965, about
+            <a href="https://www.jstor.org/stable/1816292">string quartets rather than haircuts</a>.
+          </p>
+          <blockquote class="inscription">
+            <p>Nothing happened to haircuts. <em>Everything happened to their alternative.</em></p>
+          </blockquote>
+        </section>
 
-      <section id="ledger" class="ledger" aria-label="The town ledger" hidden></section>
+        <section class="chapter" id="minutes">
+          <h2>Count it in minutes</h2>
+          <p>
+            Priced in hats, it looks as though haircuts got dearer. Priced in minutes of human work, you can see what
+            actually moved.
+          </p>
+        </section>
 
-      <section id="crisis" class="crisis" hidden></section>
+        <figure class="plate" data-figure="minutes"></figure>
 
-      <section id="charts" class="charts" aria-label="The town in charts" hidden></section>
+        <section class="chapter">
+          <p>
+            Every way of putting it comes down to one line: the price of a haircut, measured in hats, equals the
+            hatter's output per hour divided by the barber's. Whether you experience that as dearer haircuts, cheaper
+            hats or higher wages depends on what your money happens to track. The ratio is the same in all three.
+          </p>
+        </section>
 
-      <section id="townhall-wrap" hidden>
-        <details id="townhall" class="townhall">
-          <summary>Town hall — change the rules</summary>
-          <div id="townhall-body"></div>
-        </details>
-      </section>
+        <section class="chapter" id="morph">
+          <h2>Same engine, higher stakes</h2>
+          <p>
+            Hats and haircuts carry no baggage, which makes them a good warm-up. Now swap the buildings. The hat press
+            becomes an automated plant. The barbershop becomes a care house, where an hour of attentive care still
+            takes one caregiver one hour.
+          </p>
+        </section>
 
-      <section class="explainer" aria-label="Back at full size">
-        <h2>Back at full size</h2>
-        <p>
-          The town isolates one mechanism, and the mechanism operates at full
-          scale. Where productivity grows more slowly than economy-wide wages
-          (childcare, tuition, hospitals, haircuts, live theater, elder
-          care), prices tend to rise relative to the fast-productivity goods
-          around them. That acquits no particular bill: administration,
-          market power, insurance, rent, and quality change all pile on top,
-          and how much of any real bill is Baumol is an empirical question
-          this toy doesn't answer. What the town shows is narrower and
-          stranger: a service can grow steadily more expensive, relative to
-          everything else, while nobody involved does anything wrong.
-        </p>
-      </section>
+        <figure class="plate plate--wide" data-figure="morph"></figure>
 
-      <footer class="colophon">
-        <p>
-          The mechanism is William Baumol and William Bowen's
-          <em>cost disease</em> (1965): when technology multiplies what an hour
-          of work produces in one sector, that hour's value rises everywhere —
-          pulled up through paychecks or through cheaper goods, but either way
-          an unchanged human hour becomes relatively expensive. Everything on
-          this page is a small two-sector economy running live in your browser.
-          For the real thing, start with Baumol &amp; Bowen's
-          <a
-            href="https://www.jstor.org/stable/1816292"
-            target="_blank"
-            rel="noopener"
-            ><em>On the Performing Arts: The Anatomy of Their Economic
-            Problems</em></a
-          >
-          (1965), or the modern overview in
-          <a
-            href="https://www.intereconomics.eu/contents/year/2023/number/6/article/revisiting-baumol-s-disease-structural-change-productivity-slowdown-and-income-inequality.html"
-            target="_blank"
-            rel="noopener"
-            >Revisiting Baumol's Disease</a
-          >
-          (2023).
-        </p>
-        <p>
-          This piece is a collaboration between Charlie Deck, who set the
-          brief and edited; Fable — Anthropic's Claude Fable 5 — which built
-          the economic model, drew the town, and drafted the prose; and
-          OpenAI's GPT-5.6 Pro, which reviewed four drafts as an unsparing
-          outside economist. Mistakes that survived all three of us are
-          shared property.
-        </p>
-        <details class="model-notes">
-          <summary>What the model assumes (and what it doesn't claim)</summary>
-          <ul>
-            <li>
-              The whole lesson is one identity: with a shared wage
-              <em>w</em>, a care-hour costs <em>w</em> and a software unit
-              costs <em>w ÷ A</em>, so
-              <strong>p<sub>care</sub> / p<sub>software</sub> = A</strong> —
-              the productivity multiple. Demand is a two-good CES system
-              (the "will families accept an alternative?" lever is its
-              elasticity of substitution), with a floor on care demand
-              because parents work regardless of price.
-            </li>
-            <li>
-              The town is a parable, not a history. Real IDEs did not double
-              output, and "software units" are a fiction; the eras are named
-              for flavor, sized for arithmetic.
-            </li>
-            <li>
-              Studios hire anyone trained, pay what an hour produces, and sell
-              software at labor cost — no profits, no capital owners, no
-              unemployment beyond retraining and unbooked sitters.
-            </li>
-            <li>
-              Workers are interchangeable after retraining, and a sitter's
-              hour is one hour of one-on-one care unless a policy changes the
-              product (batching, the robo-app).
-            </li>
-            <li>
-              The robo-sitter is a stylized routing rule — families who accept
-              it take it when it's cheaper — not a full substitution model.
-              Its price (3 software units/hr) and its thinner attention are
-              assumptions, on display, not findings.
-            </li>
-            <li>
-              The toy isolates one mechanism: the rising opportunity cost of
-              human time. Real childcare, healthcare, and tuition also carry
-              administration, market power, insurance, and quality change —
-              none of which are modeled here.
-            </li>
-          </ul>
-        </details>
-      </footer>
+        <section class="chapter">
+          <p>
+            The chart did not move. Nothing in the mechanism belongs to barbers. It applies wherever a person's time
+            is a large part of what is being sold: teaching, nursing, minding toddlers, keeping watch, playing music
+            to a room, fixing a leak, giving legal advice, checking someone's work.
+          </p>
+        </section>
+
+        <section class="chapter" id="bridge">
+          <h2>The bridge</h2>
+          <p>
+            The step most explanations skip is the walk across the street. Care gets more expensive because caregivers
+            could be doing something else, and the something else now pays more. Close the road and see what changes.
+          </p>
+        </section>
+
+        <figure class="plate plate--wide" data-figure="bridge"></figure>
+
+        <section class="chapter">
+          <p>
+            With the road closed, care stays cheap, and it stays cheap because caregivers stay poor. The same happens
+            if the machine's gains go to its owners instead of into wages: when the factory wage doesn't rise, the care
+            house has nothing to match. Cost disease is what rising wages look like from inside a job that machines
+            can't speed up.
+          </p>
+        </section>
+
+        <section class="chapter" id="richer">
+          <h2>Richer, and it feels poorer</h2>
+          <p>A care-hour that costs eight gadgets sounds like bad news. Look at what an hour of work buys.</p>
+        </section>
+
+        <figure class="plate" data-figure="basket"></figure>
+
+        <section class="chapter">
+          <p>
+            An hour of work still buys an hour of care, exactly as it did at the start, or a pile of gadgets that keeps
+            growing. Care takes a larger slice of the budget because everything around it got cheap. The care bill
+            looks alarming, and the town is materially far richer than it has ever been.
+          </p>
+        </section>
+
+        <section class="chapter" id="choices">
+          <h2>Something has to give</h2>
+          <p>
+            Being able to afford something on average is a long way from agreeing to pay for it. When care gets
+            relatively dear, a town has a handful of ways to respond, and each one moves the strain somewhere else.
+            Pick one and let twelve years run while the machine improves eightfold.
+          </p>
+        </section>
+
+        <figure class="plate plate--wide" data-figure="choices"></figure>
+
+        <section class="chapter">
+          <p>
+            A wage cap doesn't make care cheaper to provide. It turns the cost into vacancies and a waiting list.
+            Holding care spending where it was looks prudent on the spreadsheet and buys a fraction of the care.
+            Paying the full price works for most of the town but leaves the households that gained least priced out;
+            public provision reaches them, and shows up as a large tax bill. Bigger caseloads and robots really do
+            lower the price, partly by changing what is being bought. Only better tools for caregivers lower it while
+            the product stays the same.
+          </p>
+        </section>
+
+        <section class="chapter" id="demand">
+          <h2>Two claims that travel together</h2>
+          <p>
+            So far there has been one claim: the service's relative price rises. That follows from production and
+            wages alone. A second claim often rides along with it: that care, schooling and the arts must end up
+            absorbing most of the workforce. That one needs an assumption about what people want.
+          </p>
+        </section>
+
+        <figure class="plate plate--wide" data-figure="demand"></figure>
+
+        <section class="chapter">
+          <p>
+            If people won't accept an alternative, spending and jobs pour into the service. If a cheap substitute will
+            do (a recording for a concert, an app for a tutor), the human version shrinks. In every case the price
+            chart on the left stays exactly where it was.
+          </p>
+          <p>
+            Economists have tested both halves. Looking at U.S. industries from 1948 to 2001, William Nordhaus
+            <a href="https://www.nber.org/papers/w12218">found</a> that sectors with slow productivity growth did see
+            their relative prices rise, as the first claim predicts. The second depends on substitution, as the figure
+            does. In <a href="https://ideas.repec.org/a/aea/aecrev/v97y2007i1p429-443.html">a model by Rachel Ngai and
+            Christopher Pissarides</a>, employment drifts toward the slowest-growing sector when goods are poor
+            substitutes for one another. Georg Duernecker, Berthold Herrendorf and Ákos Valentinyi
+            <a href="https://ideas.repec.org/a/oup/jeurec/v22y2024i1p428-473..html">estimate</a> that American
+            services are good enough substitutes for one another that the future drag from cost disease should be
+            milder than the past one.
+          </p>
+        </section>
+
+        <section class="chapter" id="afford">
+          <h2>Who can afford it?</h2>
+          <p>
+            "Society can afford it" is a claim about averages. If the machine's gains are shared evenly, every
+            household's income keeps pace with the caregiver's wage and everyone can still buy care. If the gains pile
+            up at the top, the average looks fine while the bottom quarter falls behind, a distinction
+            <a
+              href="https://www.intereconomics.eu/contents/year/2023/number/6/article/revisiting-baumol-s-disease-structural-change-productivity-slowdown-and-income-inequality.html"
+              >recent work on Baumol's disease</a
+            >
+            has started to take seriously.
+          </p>
+        </section>
+
+        <figure class="plate plate--wide" data-figure="afford"></figure>
+
+        <section class="chapter" id="cases">
+          <h2>Same disease, eight industries</h2>
+          <p>
+            People bring different intuitions to different industries. Nobody is surprised that a concert costs more
+            than a download; plenty of people are surprised by their plumber's bill, or their parents' care home. So
+            here is the same engine run for forty years in eight industries, with the machine improving at the same
+            pace in each.
+          </p>
+          <p>
+            Where nothing intervenes, the price climbs about tenfold in every one. It climbs less where something gives:
+            classes grow, drafting software takes over part of the work, or the kitchen finally gets faster. The cases
+            also differ in who pays and who goes without, and in whether people will accept a substitute. Each case comes with what studies of the real industry have found.
+          </p>
+        </section>
+
+        <figure class="plate plate--wide" data-figure="cases"></figure>
+
+        <section class="chapter" id="lab">
+          <h2>The lab</h2>
+          <p>
+            Here is the whole engine with every control exposed, and twelve settings to run it in. Each one notes
+            what it teaches and where the analogy strains. Anything you set is saved in the address bar, so you can
+            send a particular town to someone.
+          </p>
+        </section>
+
+        <figure class="plate plate--full" data-figure="lab"></figure>
+
+        <footer class="endnotes">
+          <section class="chapter chapter--notes" id="limits">
+            <h2>Where the toy stops</h2>
+            <dl class="caveats">
+              <dt>Why not start with American health care or tuition?</dt>
+              <dd>
+                Those prices also carry insurance, market power, administrative overhead, regulation, subsidies,
+                amenities and signaling. Every reader picks a different culprit, and the mechanism gets lost in the
+                argument. The casebook above gives each its evidence, including the disputes.
+              </dd>
+              <dt>Housing is a bad example</dt>
+              <dd>
+                Land, zoning and location rents swamp everything in this model, even though building itself has
+                stagnated.
+              </dd>
+              <dt>Everyone here can do every job</dt>
+              <dd>
+                Real workers need training and licences, and some stay in a job they love for less. The lab's mobility,
+                training and pass-through controls stand in for all of that.
+              </dd>
+              <dt>Service productivity is hard to measure</dt>
+              <dd>
+                Seeing more patients or teaching bigger classes isn't productivity growth if each person gets less. The
+                lab tracks quality and human presence separately so that a cheaper price can't hide a different
+                product.
+              </dd>
+            </dl>
+          </section>
+
+          <section class="chapter chapter--notes" id="model">
+            <h2>The model, briefly</h2>
+            <p>
+              Gadgets are the unit of account. With a shared wage <var>w</var>, goods productivity
+              <var>A<sub>G</sub></var> and service productivity <var>A<sub>S</sub></var>:
+            </p>
+            <div
+              class="equation"
+              aria-label="p sub G equals w over A sub G; p sub S equals w over A sub S; so p sub S over p sub G equals A sub G over A sub S"
+            >
+              <span><var>p<sub>G</sub></var> = <var>w</var> ⁄ <var>A<sub>G</sub></var></span>
+              <span><var>p<sub>S</sub></var> = <var>w</var> ⁄ <var>A<sub>S</sub></var></span>
+              <span class="equation__result"
+                ><var>p<sub>S</sub></var> ⁄ <var>p<sub>G</sub></var> = <var>A<sub>G</sub></var> ⁄
+                <var>A<sub>S</sub></var></span
+              >
+            </div>
+            <p>
+              Demand splits spending between the two goods with a constant elasticity of substitution <var>σ</var>, so
+              <var>E<sub>S</sub></var> ⁄ <var>E<sub>G</sub></var> = <var>K</var>(<var>p<sub>S</sub></var> ⁄
+              <var>p<sub>G</sub></var>)<sup>1−σ</sup>, tilted by income sensitivity and floored by essential need. The
+              factory wage is the starting wage plus the share of each productivity gain that reaches paychecks. Service
+              pay is sticky: once a provider has been short of staff or paying under the factory for most of a year, it
+              raises pay to the going rate. Workers drift toward the better wage at a speed set by mobility. Households
+              are ranked by income; one counts as served if the sector has room and meeting its need costs no more than
+              half its net income. Everything runs from a fixed time step with no randomness, so the same settings
+              always tell the same story.
+            </p>
+          </section>
+
+          <section class="chapter chapter--notes" id="sources">
+            <h2>Sources</h2>
+            <h3 class="sources__group">The original argument</h3>
+            <ol class="sources">
+              <li>
+                William J. Baumol and William G. Bowen (1965).
+                <a href="https://www.jstor.org/stable/1816292"
+                  >On the Performing Arts: The Anatomy of Their Economic Problems</a
+                >. <cite>American Economic Review</cite>. Expanded as <cite>Performing Arts: The Economic Dilemma</cite>
+                (1966).
+              </li>
+              <li>
+                William J. Baumol (1967). Macroeconomics of Unbalanced Growth: The Anatomy of Urban Crisis.
+                <cite>American Economic Review</cite> 57(3).
+              </li>
+            </ol>
+            <h3 class="sources__group">Tests and extensions</h3>
+            <ol class="sources">
+              <li>
+                William D. Nordhaus (2008).
+                <a href="https://www.nber.org/papers/w12218">Baumol's Diseases: A Macroeconomic Perspective</a>.
+                <cite>The B.E. Journal of Macroeconomics</cite> (NBER working-paper version).
+              </li>
+              <li>
+                L. Rachel Ngai and Christopher A. Pissarides (2007).
+                <a href="https://ideas.repec.org/a/aea/aecrev/v97y2007i1p429-443.html"
+                  >Structural Change in a Multisector Model of Growth</a
+                >. <cite>American Economic Review</cite>.
+              </li>
+              <li>
+                Georg Duernecker, Berthold Herrendorf and Ákos Valentinyi (2024).
+                <a href="https://ideas.repec.org/a/oup/jeurec/v22y2024i1p428-473..html"
+                  >Structural Change within the Services Sector and the Future of Cost Disease</a
+                >. <cite>Journal of the European Economic Association</cite>.
+              </li>
+              <li>
+                Eric Helland and Alexander Tabarrok (2019).
+                <a href="https://papers.ssrn.com/abstract=3392666">Why Are the Prices So Damn High?</a> Mercatus
+                Center.
+              </li>
+              <li>
+                Jochen Hartwig and Hagen M. Krämer (2023).
+                <a
+                  href="https://www.intereconomics.eu/contents/year/2023/number/6/article/revisiting-baumol-s-disease-structural-change-productivity-slowdown-and-income-inequality.html"
+                  >Revisiting Baumol's Disease: Structural Change, Productivity Slowdown and Income Inequality</a
+                >. <cite>Intereconomics</cite> 58(6).
+              </li>
+              <li>
+                Frederick van der Ploeg (2007).
+                <a href="https://ideas.repec.org/a/mhr/finarc/urnsici0015-2218(200712)634_519sssasp_2.0.tx_2-x.html"
+                  >Sustainable Social Spending and Stagnant Public Services: Baumol's Cost Disease Revisited</a
+                >. <cite>FinanzArchiv</cite> 63(4).
+              </li>
+            </ol>
+            <p class="sources__note">Industry studies are listed with each case in the casebook.</p>
+          </section>
+        </footer>
+      </article>
     </main>
-    <script type="module" src="/src/main.ts"></script>
+
+    <footer class="colophon">
+      <p>Set in Fraunces, Literata and Instrument Sans. Two inks: one for things, one for time.</p>
+    </footer>
   </body>
 </html>

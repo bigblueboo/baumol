@@ -1,60 +1,22 @@
 # Status
 
-_Last updated: 2026-08-11_
+_Last updated: 2026-10-10_
 
-## What this is
+## Done
 
-"One Hour Is Still One Hour" — an interactive Baumol's cost disease
-explorable (software engineer vs babysitter), per `DESIGN.md`. Single-page
-Vite + strict TS, no framework. Dev port 6414, preview 6415, e2e 6416
-(e2e serves the production preview build — no HMR flakes).
+- **Model** (`src/model/`): two-sector town; factory pay tracks output (with a pass-through share); service pay is sticky (revised only after ~0.8 years of strain), so gaps open, people walk, then providers answer. CES demand with income tilt and essential floor; six institutions (subsidy, public provision, frozen budget, wage cap, caseload, automation, quality standard); income distribution with flat or exemption-based progressive tax; unserved households split into priced out, rationed, and chose an alternative. Unit-tested.
+- **Sim** (`src/sim/`): a run is a `Course` (rules over time, length) advanced in whole fixed steps, so on-screen and headless runs agree exactly.
+- **Essay**: styled as a news feature (section label, headline, dek, byline, captioned lead art, endnotes), with study links woven into the prose. Lead art plus ten figures: the hats tutorial with a model-driven narrated causal chain and ledger; minutes/equation/money framing; morph across ten settings; the labor-market bridge and pass-through; what an hour buys; seven responses with a report card; two claims (cost disease vs structural change); household affordability with market and tax lenses; a casebook of eight industries (live music, health, education, childcare, restaurants, home repair, legal advice, AI code review), each run for 40 years with its own twist and set beside the published evidence; the lab with URL-encoded settings, which the casebook can load.
+- **Craft**: compact phone composition, light and dark themes, reduced motion, optional synthesized sound, per-figure CSS with tone tokens.
 
-## Quality state
+## Review log
 
-- 29 unit tests green (economics invariants incl. pass-through invariance
-  of the relative-price gap, honest-metrics accounting, URL flag parsing,
-  engine partition-invariance).
-- 12 e2e green + 4 project-scoped skips, full suite ~1 min single-worker.
-- Expert (GPT-5.6 Pro) reviews: round 1 (all P0-P2 addressed), round 2
-  (B+, narrative choreography — addressed: beat-gated mechanisms, vote
-  after the finale, unified dwell, ?fast fix, robo budget consistency,
-  honest metric labels), round 3 (**A−, no P0s**; both P1s fixed: shared
-  installed() predicate for the finale, forward-looking pass-through copy
-  with settled-state narration). Raw reviews in /tmp/expert-review-{1,2,3}.md.
-- Thermo-nuclear structural review: raw verdict NEEDS RESTRUCTURING.
-  Verified-and-fixed: scene now consumes engine-reported sim time (no
-  second clock), applyParams recomputes capacity before deriving, policy
-  votes unpause, town-hall knobs fully typed (no casts), e2e hook typed.
-  Verified-but-deferred (see below): unifying the narrative state machine
-  into one discriminated union, and the policy-as-union refactor.
+- Four cycles of thermo-nuclear code review + design review, each acted on. Final design scores: aesthetics 8.5, interactivity 7.5, delight 8, educational value 8.5 (before the last round of fixes).
+- 2026-10-10: news-feature restyle, two new settings (home repair, legal advice) and the casebook; a fifth thermo-nuclear review, acted on (casebook claims pinned by `tests/casebook.test.ts`; lab handoff via `openLab`, with controls synced in place).
 
-## Architecture notes
+## Open
 
-- `src/model/sim.ts` — pure two-sector economy; `step(s, p, dt, gates)`
-  where `Gates` freezes wage/labor/sitPrice/demand during narration beats.
-- `src/app/director.ts` — beats, inscriptions, one-shot observations;
-  narrative clock advances by achieved sim progress (engine returns
-  consumed weeks), so words can't outrun numbers.
-- Reset = `location.reload()` on purpose (only full reset that resets all).
-- Inscription overlay hides *instantly* on close — a fading ghost overlay
-  intercepted clicks for minutes in e2e (found via trace).
-
-## Known gaps / next
-
-- Deferred restructurings from the thermo-nuclear review (valid, not
-  blocking): collapse phase/beat/unlock-booleans/pressCount into one
-  discriminated `StoryStage` union with a pure transition function;
-  represent policy as a typed union instead of id + param patch; move
-  store writes behind named actions. Do these before adding the
-  DESIGN.md scenario selector (education/healthcare/etc.).
-- Cross-browser QA (Safari/WebKit, Firefox), screen readers, zoom, and
-  forced-colors are untested — WebKit can't launch reliably on this box.
-
-## Deployment
-
-- Live at https://baumol.charliedeck.com (Netlify site `baumol-charliedeck`,
-  id 8c2d4a33-c7e6-4a39-ad84-113ee19cea4f, team charliedeck).
-- Public repo: https://github.com/bigblueboo/baumol — push to `main`
-  deploys (build `npm run build`, publish `dist`, Node 22 via netlify.toml).
-- charliedeck.com is on Netlify DNS, so the subdomain and TLS provisioned
-  automatically from `custom_domain`.
+- Fig 3 wage boards show each setting's own goods units (captioned, not normalized).
+- Lab desktop layout leaves some empty space beside the long control column.
+- Lab desktop: the left column could become sticky so Distribution sliders keep visible feedback.
+- Fig 8: the y-axis meaning changes between lenses without a transition.

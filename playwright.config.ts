@@ -1,37 +1,19 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const port = 6172;
+
 export default defineConfig({
   testDir: "e2e",
   reporter: "list",
-  timeout: 120_000,
-  // A 16 GB fanless machine: more workers starve the rAF-driven sim.
-  workers: 2,
-  use: {
-    baseURL: "http://localhost:6416",
-    trace: "retain-on-failure",
-  },
+  timeout: 60_000,
+  use: { baseURL: `http://localhost:${port}`, trace: "retain-on-failure" },
   webServer: {
-    // e2e runs against the production build: static, no HMR reloads, no
-    // dependency re-optimization mid-suite.
-    command: "npx vite build && npx vite preview --port 6416 --strictPort",
-    url: "http://localhost:6416",
+    command: `npx vite --port ${port} --strictPort`,
+    url: `http://localhost:${port}`,
     reuseExistingServer: true,
-    timeout: 120_000,
   },
   projects: [
-    {
-      name: "desktop",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 900 } },
-    },
-    {
-      // Chromium with phone metrics: WebKit can't launch reliably on this
-      // memory-constrained box, and the tests target layout, not engines.
-      name: "phone",
-      use: {
-        ...devices["iPhone 14 Pro Max"],
-        browserName: "chromium",
-        viewport: { width: 390, height: 844 },
-      },
-    },
+    { name: "desktop", use: { ...devices["Desktop Chrome"], viewport: { width: 1360, height: 900 } } },
+    { name: "phone", use: { ...devices["Desktop Chrome"], viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true } },
   ],
 });

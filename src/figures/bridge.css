@@ -1,0 +1,60 @@
+/* Fig 4: stats */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 14px;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  gap: 1px;
+  min-width: 0;
+}
+
+.stat + .stat {
+  border-left: 1px solid var(--rule);
+}
+
+.stat__label {
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+}
+
+.stat__value {
+  color: var(--tone-ink);
+  font-family: var(--font-display);
+  font-weight: 620;
+  font-size: var(--step-1);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.stat__note {
+  font-size: var(--step--2);
+  color: var(--ink-2);
+  font-family: var(--font-ui);
+}
+
+@container (max-width: 520px) {
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stat + .stat {
+    border-left: none;
+    border-top: 1px solid var(--rule);
+  }
+}
+
+.console--split .console__controls {
+  display: grid;
+  gap: 10px;
+}

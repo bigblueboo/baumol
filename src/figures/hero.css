@@ -1,0 +1,76 @@
+/* Hero art */
+
+.hero-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.hero__gadget {
+  color: var(--things);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transition:
+    opacity 300ms,
+    transform 500ms var(--ease-out);
+  transition-delay: calc(var(--i) * 18ms);
+}
+
+.hero__gadget:not(.is-on) {
+  transform: scale(0.3) !important;
+}
+
+.hero__gadget.is-on {
+  opacity: 1;
+}
+
+.hero__count {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 72px;
+  fill: var(--things);
+  font-variant-numeric: lining-nums;
+}
+
+.hero__count-label,
+.hero__clock-label {
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  fill: var(--ink);
+}
+
+.hero__clock-label {
+  text-anchor: end;
+  fill: var(--time-ink);
+}
+
+.hero__count-label--soft {
+  font-weight: 400;
+  fill: var(--ink-2);
+}
+
+.hero__face {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.hero__ticks {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.hero__hand {
+  stroke: var(--time);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.hero__pin {
+  fill: var(--things);
+}
+
