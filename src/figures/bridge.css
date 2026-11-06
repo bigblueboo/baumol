@@ -44,7 +44,7 @@
   font-family: var(--font-ui);
 }
 
-@container (max-width: 520px) {
+@container (max-width: 380px) {
   .stats {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -57,4 +57,12 @@
 .console--split .console__controls {
   display: grid;
   gap: 10px;
+}
+
+/* Beside the town: three stats in a row, so the figures shrink to fit. */
+.duo__side .stat {
+  padding: 8px 10px;
+}
+.duo__side .stat__value {
+  font-size: var(--step-0);
 }

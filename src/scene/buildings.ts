@@ -24,20 +24,18 @@ interface Spinner {
   rate: number;
 }
 
-interface Seat {
+export interface Seat {
   human: SVGGElement;
   robot: SVGGElement;
   clients: SVGGElement[];
 }
 
-/** Helper/client seats in the service windows. */
-const SEATS = 4;
 const MAX_CLIENTS_PER_SEAT = 4;
 /** Machine speed: base, and extra per doubling of productivity. */
 const MACHINE_SPEED = 0.55;
 const SPIN_DEG_PER_SECOND = 120;
 
-function signPlank(x: number, y: number, w: number, label: string, iconName: IconName, cls: string): SVGGElement {
+export function signPlank(x: number, y: number, w: number, label: string, iconName: IconName, cls: string): SVGGElement {
   return s(
     "g",
     { class: `plank ${cls}` },
@@ -186,7 +184,7 @@ export function drawFactory(sc: Scenario): Building {
   };
 }
 
-function seat(x: number, y: number): Seat {
+export function seat(x: number, y: number): Seat {
   const human = s(
     "g",
     { class: "seat__human" },
@@ -364,20 +362,9 @@ export function drawService(sc: Scenario): Building {
   // stack behind. Keep the art legible by offsetting extras upward.
   for (const st of seats) st.clients.forEach((c, i) => i > 0 && c.setAttribute("transform", `translate(${-i * 5.5} ${-i * 1.2})`));
 
-  const hiring = s(
-    "g",
-    { class: "hiring" },
-    s("path", { class: "hiring__string", d: `M${cx - 10} 240l10 -6 10 6` }),
-    s("rect", { class: "hiring__card", x: cx - 20, y: 240, width: 40, height: 18, rx: 1.5 }),
-    s("text", { class: "hiring__text", x: cx, y: 253 }, "HIRING"),
-  );
-  const publicBanner = s(
-    "g",
-    { class: "public-banner" },
-    s("path", { class: "public-banner__ribbon", d: `M${cx - 74} ${top - 14}h148l-8 9 8 9h-148l8-9z` }),
-    s("text", { class: "public-banner__text", x: cx, y: top - 1 }, "PUBLIC · TAX-FUNDED"),
-  );
-  el.append(hiring, publicBanner);
+  const hiring = hiringCard(cx, 240);
+  const publicBanner = publicRibbon(cx, top - 14);
+  el.append(hiring.el, publicBanner.el);
 
   let beam: SVGGElement | null = null;
   if (sc.service.facade === "tower") {
@@ -391,20 +378,53 @@ export function drawService(sc: Scenario): Building {
     update(snap, clock) {
       setAttr(minuteHand, "transform", `rotate(${(((clock / HOUR_SECONDS) % 1) * 360).toFixed(1)} ${cx} ${ccy})`);
       setAttr(hourHand, "transform", `rotate(${(((clock / (HOUR_SECONDS * 12)) % 1) * 360).toFixed(1)} ${cx} ${ccy})`);
-      // Inside: who is helping whom. Empty chairs for vacancies, robots for automation.
-      const vacancyRate = snap.careLaborDemand > 0 ? Math.min(1, snap.vacancies / snap.careLaborDemand) : 0;
-      const staffed = Math.round(SEATS * (1 - vacancyRate));
-      const robots = Math.round(snap.automation * SEATS);
-      const perSeat = Math.max(1, Math.min(MAX_CLIENTS_PER_SEAT, Math.round(snap.caseload)));
-      seats.forEach((st, i) => {
-        const isRobot = i >= SEATS - robots;
-        toggleClass(st.robot, "is-on", isRobot);
-        toggleClass(st.human, "is-on", !isRobot && i < staffed);
-        st.clients.forEach((c, j) => toggleClass(c, "is-on", j < perSeat));
-      });
-      toggleClass(hiring, "is-on", isHiring(snap));
-      toggleClass(publicBanner, "is-on", snap.params.funding === "public");
+      updateSeats(seats, snap);
+      hiring.update(snap);
+      publicBanner.update(snap);
       if (beam) setAttr(beam, "transform", `rotate(${(Math.sin(clock * 0.9) * 22).toFixed(1)})`);
     },
   };
+}
+
+/** Inside the service: who is helping whom. Empty chairs for vacancies, robots for automation. */
+export function updateSeats(seats: Seat[], snap: Snapshot): void {
+  const vacancyRate = snap.careLaborDemand > 0 ? Math.min(1, snap.vacancies / snap.careLaborDemand) : 0;
+  const staffed = Math.round(seats.length * (1 - vacancyRate));
+  const robots = Math.round(snap.automation * seats.length);
+  const perSeat = Math.max(1, Math.min(MAX_CLIENTS_PER_SEAT, Math.round(snap.caseload)));
+  seats.forEach((st, i) => {
+    const isRobot = i >= seats.length - robots;
+    toggleClass(st.robot, "is-on", isRobot);
+    toggleClass(st.human, "is-on", !isRobot && i < staffed);
+    st.clients.forEach((c, j) => toggleClass(c, "is-on", j < perSeat));
+  });
+}
+
+/** A sign that shows or hides with the town's state. */
+export interface Notice {
+  el: SVGGElement;
+  update(snap: Snapshot): void;
+}
+
+/** A card on the door while the service can't fill its posts. */
+export function hiringCard(cx: number, y: number): Notice {
+  const el = s(
+    "g",
+    { class: "hiring" },
+    s("path", { class: "hiring__string", d: `M${cx - 10} ${y}l10 -6 10 6` }),
+    s("rect", { class: "hiring__card", x: cx - 20, y, width: 40, height: 18, rx: 1.5 }),
+    s("text", { class: "hiring__text", x: cx, y: y + 13 }, "HIRING"),
+  );
+  return { el, update: (snap) => toggleClass(el, "is-on", isHiring(snap)) };
+}
+
+/** A ribbon over the service while taxes pay for it. */
+export function publicRibbon(cx: number, y: number): Notice {
+  const el = s(
+    "g",
+    { class: "public-banner" },
+    s("path", { class: "public-banner__ribbon", d: `M${cx - 74} ${y}h148l-8 9 8 9h-148l8-9z` }),
+    s("text", { class: "public-banner__text", x: cx, y: y + 13 }, "PUBLIC · TAX-FUNDED"),
+  );
+  return { el, update: (snap) => toggleClass(el, "is-on", snap.params.funding === "public") };
 }

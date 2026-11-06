@@ -18,6 +18,38 @@ export const LAYOUT = {
   belt: { y: 278, itemY: 266 },
 } as const;
 
+export type Job = "goods" | "service";
+
+export interface Point {
+  x: number;
+  y: number;
+}
+
+/** Where townspeople stand, and the way they walk between yards. Each scene supplies its own. */
+export interface Yards {
+  slot(job: Job, slot: number): Point;
+  /** Waypoints from where someone stands to a new spot, by way of the road. */
+  route(from: Point, to: Point): Point[];
+}
+
+/**
+ * Yard slots in the flat drawing: the front row fills first, and column 0 sits by the road so
+ * arrivals and departures don't cross the crowd.
+ */
+export function flatYards(serviceDx: number): Yards {
+  const { cols, colGap, rowGap, rows, frontY, goodsRoadX, serviceRoadX } = LAYOUT.yard;
+  return {
+    slot(job, slot) {
+      const col = slot % cols;
+      const row = Math.floor(slot / cols) % rows;
+      const stagger = row % 2 ? colGap / 2 : 0;
+      const x = job === "goods" ? goodsRoadX - col * colGap - stagger : serviceRoadX + serviceDx + col * colGap + stagger;
+      return { x, y: frontY - row * rowGap };
+    },
+    route: (from, to) => [{ x: from.x, y: LAYOUT.roadY }, { x: to.x, y: LAYOUT.roadY }, to],
+  };
+}
+
 /**
  * How the drawing is arranged. Phones get the compact composition: the noticeboard moves out
  * into an HTML strip and the service building slides left, so the town draws about a third larger.

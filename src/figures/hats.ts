@@ -5,7 +5,7 @@ import { steadyCourse } from "../sim/townSim";
 import { h } from "../ui/dom";
 import { count, num } from "../ui/format";
 import { sound } from "../ui/sound";
-import { HourTray, inventControls, plateHead } from "./common";
+import { HourTray, duo, inventControls, plateHead } from "./common";
 import { createStory, type Beat } from "./story";
 import { Town, WARMUP_TOWN, steady } from "./town";
 
@@ -114,7 +114,7 @@ export function mountHats(host: HTMLElement): void {
     h(
       "caption",
       { class: "ledger__caption" },
-      "Each machine, once the town settles: hats a hatter makes per hour, haircuts a barber gives per hour, the wage in hats per hour, and a haircut's price in hats.",
+      "Where each machine leaves the town once it settles. Wage and price are in hats.",
     ),
     h("thead", {}, h("tr", {}, ...columns.map((c) => h("th", { scope: "col" }, c)))),
     ledgerBody,
@@ -140,14 +140,9 @@ export function mountHats(host: HTMLElement): void {
 
   host.append(
     plateHead(1, "The hat works and the barbershop"),
-    h(
-      "div",
-      { class: "stage-stack" },
-      town.frame,
-      h("div", { class: "trays" }, hatTray.el, cutTray.el),
-      h("div", { class: "console" }, controls.el, story.el),
+    duo(
+      [town.frame, h("div", { class: "trays" }, hatTray.el, cutTray.el)],
+      [h("div", { class: "console" }, controls.el, story.el), doneNote, h("div", { class: "ledger-wrap" }, ledger)],
     ),
-    doneNote,
-    h("div", { class: "ledger-wrap" }, ledger),
   );
 }

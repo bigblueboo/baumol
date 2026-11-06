@@ -1,5 +1,7 @@
 import type { EconState, Snapshot } from "../model/economy";
 import { TOWN_SIZE, calibrationOf, type Scenario } from "../model/scenarios";
+import { IsoTownScene } from "../scene/iso/isoTown";
+import type { Scene } from "../scene/scene";
 import { TownScene } from "../scene/town";
 import { TownSim, type Course } from "../sim/townSim";
 import { animate } from "../ui/loop";
@@ -22,8 +24,14 @@ interface TownOptions {
 /** The warm-up figures use a smaller town, so a single barber walking out reads clearly. */
 export const WARMUP_TOWN = 12;
 
-/** Phones get the compact town composition. Decided once, at mount. */
-const COMPACT_BELOW_PX = 640;
+/** The isometric town is a pilot: `?iso` in the address shows it in every figure. */
+const ISO = new URLSearchParams(location.search).has("iso");
+
+/**
+ * Plates narrower than this get the compact town composition: phones, and the slim simulator
+ * plates, whose town shares the width with its controls. Decided once, at mount.
+ */
+const COMPACT_BELOW_PX = 900;
 
 /**
  * A simulated town and its drawing, kept in step. Figures talk to this, never to the sim or
@@ -33,13 +41,13 @@ export class Town {
   /** The framed drawing, ready to place in the plate. */
   readonly frame: HTMLElement;
   private readonly sim: TownSim;
-  private readonly scene: TownScene;
+  private readonly scene: Scene;
   private readonly population: number;
 
   constructor(host: HTMLElement, o: TownOptions) {
     this.population = o.population ?? TOWN_SIZE;
     this.sim = new TownSim(o.course, calibrationOf(o.scenario, this.population), o.state);
-    this.scene = new TownScene(this.sim.snap, {
+    this.scene = new (ISO ? IsoTownScene : TownScene)(this.sim.snap, {
       scenario: o.scenario,
       title: o.title,
       queue: o.queue,

@@ -18,6 +18,10 @@
   max-width: var(--full);
 }
 
+.plate--sim {
+  max-width: var(--sim);
+}
+
 .plate__head {
   display: flex;
   flex-wrap: wrap;
@@ -365,23 +369,71 @@
   text-decoration-color: var(--things);
 }
 
-/* On phones the narration and the button sit right under the town, where the action is;
-   the trays follow. */
-.stage-stack {
-  display: flex;
-  flex-direction: column;
+/* ── Duo: the town on the left, held in view; its controls on the right ── */
+
+.duo__side {
+  container-type: inline-size;
+  min-width: 0;
 }
 
-@container (max-width: 640px) {
-  .stage-stack .console {
+/* Stacked: the town, then the controls, then what sat under the town, then any ledger. */
+@container (max-width: 759.98px) {
+  .duo {
+    display: flex;
+    flex-direction: column;
+  }
+  .duo__scene,
+  .duo__side {
+    display: contents;
+  }
+  .duo__scene > :not(:first-child) {
     order: 1;
-    margin-top: 12px;
   }
-  .stage-stack .console .story {
-    order: -1;
-  }
-  .stage-stack .trays {
+  .duo__side > .ledger-wrap {
     order: 2;
+  }
+}
+
+.duo__side > :first-child {
+  margin-top: clamp(14px, 2.4vw, 22px);
+}
+
+@container (min-width: 760px) {
+  .duo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(20px, 2.6vw, 36px);
+  }
+  .duo__scene {
+    container-type: inline-size;
+  }
+  .duo__side {
+    align-self: start;
+  }
+  .duo__scene > .scene-frame:only-child {
+    position: sticky;
+    top: 16px;
+  }
+  .duo__side > :first-child {
+    margin-top: 0;
+  }
+  /* Tables beside or under the town: tight rows, the numbers kept near their labels. */
+  .duo .ledger th,
+  .duo .ledger td {
+    padding: 4px 6px;
+  }
+  .duo .ledger td {
+    font-size: var(--step--1);
+  }
+  .duo .ledger-wrap {
+    margin-top: 16px;
+  }
+}
+
+/* On phones the narration sits right under the town, above the button. */
+@container (max-width: 640px) {
+  .console .story {
+    order: -1;
   }
 }
 

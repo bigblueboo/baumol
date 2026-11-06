@@ -51,6 +51,8 @@
   --gutter: clamp(16px, 4vw, 40px);
   --measure: 38rem;
   --wide: 70rem;
+  /* The simulators: a little wider than the text, so they read as part of the column. */
+  --sim: 54rem;
   --full: 86rem;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);

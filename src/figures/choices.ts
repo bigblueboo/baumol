@@ -6,7 +6,7 @@ import { TownSim, type Course } from "../sim/townSim";
 import { radioGroup } from "../ui/controls";
 import { h, setText } from "../ui/dom";
 import { sound } from "../ui/sound";
-import { plateHead } from "./common";
+import { duo, plateHead } from "./common";
 import { METRICS, metricsPanel, type MetricKey } from "./metrics";
 import { Town, steady } from "./town";
 
@@ -26,6 +26,8 @@ type ResponseId = "pay" | "cap" | "caseload" | "substitute" | "less" | "public" 
 interface Response {
   id: ResponseId;
   title: string;
+  /** The chip and report-row label; the full title shows under the run bar. */
+  short: string;
   blurb: string;
   params: Partial<Params>;
   /** Caseload and automation reached by year twelve, phased in rather than imposed on day one. */
@@ -34,17 +36,18 @@ interface Response {
 
 const NO_RAMP = { caseload: 1, automation: 0 };
 
-const PAY: Response = { id: "pay", title: "Pay the higher price", blurb: "Households pay what care costs.", params: {}, ramp: NO_RAMP };
+const PAY: Response = { id: "pay", title: "Pay the higher price", short: "Pay the price", blurb: "Households pay what care costs.", params: {}, ramp: NO_RAMP };
 const RESPONSES: Response[] = [
   PAY,
-  { id: "cap", title: "Cap wages and prices", blurb: "Care wages may rise 1% a year, no more.", params: { wageCap: true }, ramp: NO_RAMP },
-  { id: "caseload", title: "Raise caseloads", blurb: "Each caregiver looks after more residents.", params: {}, ramp: { ...NO_RAMP, caseload: 2.5 } },
-  { id: "substitute", title: "Substitute machines", blurb: "Care robots take over 60% of the hours.", params: {}, ramp: { ...NO_RAMP, automation: 0.6 } },
-  { id: "less", title: "Buy less care", blurb: "Hold care spending where it was.", params: { budgetFrozen: true }, ramp: NO_RAMP },
-  { id: "public", title: "Provide it publicly", blurb: "Free at the door, paid from taxes.", params: { funding: "public" }, ramp: NO_RAMP },
+  { id: "cap", title: "Cap wages and prices", short: "Cap wages", blurb: "Care wages may rise 1% a year, no more.", params: { wageCap: true }, ramp: NO_RAMP },
+  { id: "caseload", title: "Raise caseloads", short: "Raise caseloads", blurb: "Each caregiver looks after more residents.", params: {}, ramp: { ...NO_RAMP, caseload: 2.5 } },
+  { id: "substitute", title: "Substitute machines", short: "Use robots", blurb: "Care robots take over 60% of the hours.", params: {}, ramp: { ...NO_RAMP, automation: 0.6 } },
+  { id: "less", title: "Buy less care", short: "Buy less", blurb: "Hold care spending where it was.", params: { budgetFrozen: true }, ramp: NO_RAMP },
+  { id: "public", title: "Provide it publicly", short: "Go public", blurb: "Free at the door, paid from taxes.", params: { funding: "public" }, ramp: NO_RAMP },
   {
     id: "invest",
     title: "Invest in care technology",
+    short: "Care tech",
     blurb: "An assumption, not a lever: tools let each caregiver do 6% more a year.",
     params: { serviceGrowth: 0.06 },
     ramp: NO_RAMP,
@@ -123,9 +126,8 @@ export function mountChoices(host: HTMLElement): void {
   const cards = RESPONSES.map((r) =>
     h(
       "button",
-      { type: "button", class: `choice${r.id === "pay" ? " is-tried" : ""}`, "data-id": r.id },
-      h("span", { class: "choice__title" }, r.title),
-      h("span", { class: "choice__blurb" }, r.blurb),
+      { type: "button", class: `choice${r.id === "pay" ? " is-tried" : ""}`, "data-id": r.id, "aria-label": r.title, title: r.blurb },
+      h("span", { class: "choice__title" }, r.short),
       h("span", { class: "choice__done", "aria-hidden": "true" }, "✓"),
     ),
   );
@@ -154,7 +156,7 @@ export function mountChoices(host: HTMLElement): void {
       const cells = REPORT.map((m) =>
         h("td", { class: isWorse(m.better, m.raw(s), m.raw(payOutcome)) ? "is-worse" : "", "data-label": m.label(sc) }, m.value(s, sc)),
       );
-      return [h("tr", { class: `ledger__row${r.id === response.id ? " is-current" : ""}` }, h("th", { scope: "row" }, r.title), ...cells)];
+      return [h("tr", { class: `ledger__row${r.id === response.id ? " is-current" : ""}` }, h("th", { scope: "row" }, r.short), ...cells)];
     });
     reportBody.replaceChildren(...rows);
   }
@@ -181,11 +183,7 @@ export function mountChoices(host: HTMLElement): void {
   host.append(
     plateHead(6, "Something has to give", "The machine improves eightfold over ten years, and its gains lean a little toward the better-off. Choose how the town responds, then watch twelve years."),
     h("div", { class: "choices", role: "radiogroup", "aria-label": "How the town responds" }, ...cards),
-    town.frame,
-    h("div", { class: "runbar" }, h("span", { class: "runbar__track" }, fill), yearLabel, replay),
-    activeBlurb,
-    metrics.el,
-    reportWrap,
+    duo([town.frame, reportWrap], [h("div", { class: "runbar" }, h("span", { class: "runbar__track" }, fill), yearLabel, replay), activeBlurb, metrics.el]),
   );
   run(response);
 }

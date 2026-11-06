@@ -20,6 +20,14 @@ export function plateHead(n: number | string, title: string, note?: string): HTM
 }
 
 /**
+ * The town on the left and what you work it with on the right. On narrow plates the two stack,
+ * drawing first. A town alone in its column stays in view while the side scrolls.
+ */
+export function duo(left: HTMLElement[], right: HTMLElement[]): HTMLElement {
+  return h("div", { class: "duo" }, h("div", { class: "duo__scene" }, ...left), h("div", { class: "duo__side" }, ...right));
+}
+
+/**
  * "One worker, one hour" — a tray that fills with icons over each scene hour. The goods tray
  * fills fast and full; the service tray shows the same small number every time.
  */

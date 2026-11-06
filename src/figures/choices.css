@@ -1,32 +1,19 @@
 /* Fig 6: choices */
 
+/* Seven responses as a row of chips; the chosen one's description sits under the run bar. */
 .choices {
-  --cols: 4;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: clamp(12px, 2vw, 18px);
-}
-
-/* Seven cards: four, then three centred beneath; two per row on phones, the odd one centred. */
-.choice {
-  flex: 0 0 calc((100% - (var(--cols) - 1) * 8px) / var(--cols));
-}
-
-@container (max-width: 700px) {
-  .choices {
-    --cols: 2;
-  }
+  gap: 5px;
+  margin-bottom: clamp(12px, 2vw, 16px);
 }
 
 .choice {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: 10px 26px 10px 12px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 999px;
   text-align: left;
   background: var(--paper);
   border: 1.5px solid var(--rule-strong);
@@ -54,24 +41,14 @@
 .choice__title {
   font-family: var(--font-display);
   font-weight: 620;
-  font-size: var(--step-0);
+  font-size: var(--step--1);
   line-height: 1.2;
 }
 
-.choice__blurb {
-  font-family: var(--font-ui);
-  font-size: var(--step--2);
-  opacity: 0.8;
-}
-
 .choice__done {
-  position: absolute;
-  top: 6px;
-  right: 8px;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--time);
-  opacity: 0;
-  transition: opacity var(--dur-2);
+  display: none;
 }
 
 .choice[aria-checked="true"] .choice__done {
@@ -79,7 +56,7 @@
 }
 
 .choice.is-tried .choice__done {
-  opacity: 1;
+  display: inline;
 }
 
 .runbar {
@@ -134,7 +111,7 @@
 }
 
 /* On phones each response becomes a small card of label/value pairs instead of a clipped table. */
-@container (max-width: 560px) {
+@container (max-width: 420px) {
   .report thead {
     display: none;
   }
@@ -169,22 +146,12 @@
 }
 
 .choices__active {
-  display: none;
   margin: 6px 0 0;
   font-family: var(--font-display);
   font-style: italic;
   font-size: var(--step--1);
 }
 
-/* Phones: titles only in the cards; the chosen one's description sits under the run bar. */
-@container (max-width: 560px) {
-  .choice__blurb {
-    display: none;
-  }
-  .choice {
-    padding: 8px 24px 8px 10px;
-  }
-  .choices__active {
-    display: block;
-  }
+.report th[scope="row"] {
+  white-space: nowrap;
 }

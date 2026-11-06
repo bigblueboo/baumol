@@ -5,7 +5,7 @@ import { SCENARIOS } from "../model/scenarios";
 import { slider, toggle } from "../ui/controls";
 import { h, setText, toggleClass } from "../ui/dom";
 import { count, days, pct } from "../ui/format";
-import { inventControls, plateHead } from "./common";
+import { duo, inventControls, plateHead } from "./common";
 import { Town, WARMUP_TOWN, steady } from "./town";
 import { steadyCourse } from "../sim/townSim";
 import { isTempted } from "../scene/signals";
@@ -65,13 +65,17 @@ export function mountBridge(host: HTMLElement): void {
 
   host.append(
     plateHead(4, "The road between the jobs"),
-    town.frame,
-    h("div", { class: "stats" }, machinist.el, caregiver.el, price.el),
-    h(
-      "div",
-      { class: "console console--split" },
-      inventControls(town, { max: MAX }).el,
-      h("div", { class: "console__controls" }, road.el, passThrough.el, verdict),
+    duo(
+      [town.frame],
+      [
+        h(
+          "div",
+          { class: "console console--split" },
+          inventControls(town, { max: MAX }).el,
+          h("div", { class: "console__controls" }, road.el, passThrough.el, verdict),
+        ),
+        h("div", { class: "stats" }, machinist.el, caregiver.el, price.el),
+      ],
     ),
   );
 }

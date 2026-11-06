@@ -73,3 +73,14 @@
 .metric--wait .metric__fill {
   background: var(--things);
 }
+
+/* Beside the town: smaller figures, labels on one line. */
+.duo__side .metric {
+  padding: 8px 8px 10px;
+}
+.duo__side .metric__label {
+  min-height: 0;
+}
+.duo__side .metric__value {
+  font-size: var(--step-1);
+}

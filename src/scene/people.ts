@@ -1,8 +1,6 @@
 import { s, setAttr, toggleClass } from "../ui/dom";
 import { iconGroup, type IconName } from "./icons";
-import { LAYOUT } from "./layout";
-
-type Job = "goods" | "service";
+import type { Job, Point, Yards } from "./layout";
 
 /** What a tempted service worker is thinking about: the factory's wage. */
 interface Temptation {
@@ -10,20 +8,46 @@ interface Temptation {
   icon: IconName;
 }
 
-interface Point {
-  x: number;
-  y: number;
-}
-
 const WALK_SPEED = 120; // viewBox units per second
 const SKIN_TONES = ["skin-a", "skin-b", "skin-c"] as const;
 
-/** One townsperson: a little riso figure that walks between yards along the road. */
+/** How a townsperson is drawn. The crowd moves people about; the figure only strikes poses. */
+export interface Figure {
+  readonly el: SVGGElement;
+  /** How far above the feet the thought bubble floats, relative to the flat figure's. */
+  readonly bubbleLift: number;
+  /** `phase` counts strides; `facing` is 1 walking toward +x, -1 toward -x. */
+  pose(moving: boolean, phase: number, facing: number, job: Job): void;
+}
+
+export type FigureMaker = (id: number) => Figure;
+
+/** The flat town's little riso figure: legs that swing, a cap for factory hands. */
+export function risoFigure(id: number): Figure {
+  const legL = s("line", { class: "person__leg", x1: -2.4, y1: -11, x2: -2.4, y2: 0 });
+  const legR = s("line", { class: "person__leg", x1: 2.4, y1: -11, x2: 2.4, y2: 0 });
+  const body = s("path", { class: "person__body", d: "M-6.2 -9.5C-6.4 -19 -4.4 -24 0 -24s6.4 5 6.2 14.5z" });
+  const head = s("circle", { class: `person__head ${SKIN_TONES[id % 3]}`, cx: 0, cy: -29.5, r: 5.2 });
+  const hair = s("path", { class: "person__hair", d: id % 2 ? "M-5.2 -30.5a5.2 5.2 0 0 1 10.4 0c-2.5-1.6-6-1.8-10.4 0z" : "M-5 -31a5.2 5.2 0 0 1 10 -1c-3 .2-6 0-10 1z" });
+  const cap = s("path", { class: "person__cap", d: "M-5.6 -31.2a5.6 4.6 0 0 1 11.2 0zM4.8 -31.2h3.4" });
+  const el = s("g", { class: "person__figure" }, legL, legR, body, head, hair, cap);
+  return {
+    el,
+    bubbleLift: 0,
+    pose(moving, phase, facing) {
+      const swing = moving ? Math.sin(phase * Math.PI * 2) * 3.4 : 0;
+      const bob = moving ? Math.abs(Math.cos(phase * Math.PI * 2)) * -1.4 : 0;
+      setAttr(legL, "x2", (-2.4 + swing).toFixed(2));
+      setAttr(legR, "x2", (2.4 - swing).toFixed(2));
+      setAttr(el, "transform", `translate(0 ${bob.toFixed(2)}) scale(${facing} 1)`);
+    },
+  };
+}
+
+/** One townsperson, walking between yards by way of the road. */
 class Person {
   readonly el: SVGGElement;
-  private readonly legL: SVGLineElement;
-  private readonly legR: SVGLineElement;
-  private readonly figure: SVGGElement;
+  private readonly figure: Figure;
   private readonly bubble: SVGGElement;
   private readonly bubbleText: SVGTextElement;
   private bubbleIcon: SVGGElement | null = null;
@@ -40,17 +64,12 @@ class Person {
     readonly id: number,
     job: Job,
     at: Point,
+    makeFigure: FigureMaker,
   ) {
     this.job = job;
     this.pos = { ...at };
     this.phase = (id * 0.37) % 1;
-    this.legL = s("line", { class: "person__leg", x1: -2.4, y1: -11, x2: -2.4, y2: 0 });
-    this.legR = s("line", { class: "person__leg", x1: 2.4, y1: -11, x2: 2.4, y2: 0 });
-    const body = s("path", { class: "person__body", d: "M-6.2 -9.5C-6.4 -19 -4.4 -24 0 -24s6.4 5 6.2 14.5z" });
-    const head = s("circle", { class: `person__head ${SKIN_TONES[id % 3]}`, cx: 0, cy: -29.5, r: 5.2 });
-    const hair = s("path", { class: "person__hair", d: id % 2 ? "M-5.2 -30.5a5.2 5.2 0 0 1 10.4 0c-2.5-1.6-6-1.8-10.4 0z" : "M-5 -31a5.2 5.2 0 0 1 10 -1c-3 .2-6 0-10 1z" });
-    const cap = s("path", { class: "person__cap", d: "M-5.6 -31.2a5.6 4.6 0 0 1 11.2 0zM4.8 -31.2h3.4" });
-    this.figure = s("g", { class: "person__figure" }, this.legL, this.legR, body, head, hair, cap);
+    this.figure = makeFigure(id);
     this.bubbleText = s("text", { class: "bubble__text", x: 6, y: -50 });
     this.bubble = s(
       "g",
@@ -60,7 +79,8 @@ class Person {
       s("rect", { class: "bubble__cloud", x: -14, y: -64, width: 46, height: 20, rx: 10 }),
       this.bubbleText,
     );
-    this.el = s("g", { class: `person person--${job}` }, this.figure, this.bubble);
+    if (this.figure.bubbleLift) this.bubble.setAttribute("transform", `translate(0 ${-this.figure.bubbleLift})`);
+    this.el = s("g", { class: `person person--${job}` }, this.figure.el, this.bubble);
   }
 
   /** Stand at a point at once, abandoning any walk in progress. */
@@ -70,9 +90,12 @@ class Person {
     this.update(0, true);
   }
 
-  walkTo(target: Point, viaRoad: boolean): void {
-    const road = LAYOUT.roadY;
-    this.route = viaRoad ? [{ x: this.pos.x, y: road }, { x: target.x, y: road }, target] : [target];
+  walkTo(route: Point[]): void {
+    this.route = route;
+  }
+
+  get at(): Point {
+    return this.pos;
   }
 
   get walking(): boolean {
@@ -117,11 +140,7 @@ class Person {
       moving = true;
     }
     if (moving) this.phase += dt * 3.2;
-    const swing = moving ? Math.sin(this.phase * Math.PI * 2) * 3.4 : 0;
-    const bob = moving ? Math.abs(Math.cos(this.phase * Math.PI * 2)) * -1.4 : 0;
-    setAttr(this.legL, "x2", (-2.4 + swing).toFixed(2));
-    setAttr(this.legR, "x2", (2.4 - swing).toFixed(2));
-    setAttr(this.figure, "transform", `translate(0 ${bob.toFixed(2)}) scale(${this.facing} 1)`);
+    this.figure.pose(moving, this.phase, this.facing, this.job);
     setAttr(this.el, "transform", `translate(${this.pos.x.toFixed(1)} ${this.pos.y.toFixed(1)})`);
     toggleClass(this.el, "is-walking", moving);
   }
@@ -131,19 +150,6 @@ class Person {
     this.job = job;
     this.el.classList.replace(job === "goods" ? "person--service" : "person--goods", `person--${job}`);
   }
-}
-
-/**
- * Yard slots: the front row fills first, and column 0 sits by the road so arrivals and
- * departures don't cross the crowd.
- */
-function slotPoint(job: Job, slot: number, serviceDx: number): Point {
-  const { cols, colGap, rowGap, rows } = LAYOUT.yard;
-  const col = slot % cols;
-  const row = Math.floor(slot / cols) % rows;
-  const stagger = row % 2 ? colGap / 2 : 0;
-  const x = job === "goods" ? LAYOUT.yard.goodsRoadX - col * colGap - stagger : LAYOUT.yard.serviceRoadX + serviceDx + col * colGap + stagger;
-  return { x, y: LAYOUT.yard.frontY - row * rowGap };
 }
 
 interface CrowdFrame {
@@ -160,15 +166,16 @@ export class Crowd {
   constructor(
     population: number,
     initialService: number,
-    private readonly serviceDx: number,
+    private readonly yards: Yards,
     private readonly reduced: boolean,
+    makeFigure: FigureMaker = risoFigure,
   ) {
     this.el = s("g", { class: "crowd" });
     const k = Math.round(initialService);
     this.people = Array.from({ length: population }, (_, i) => {
       const job: Job = i < k ? "service" : "goods";
       const slot = job === "service" ? i : i - k;
-      const p = new Person(i, job, slotPoint(job, slot, serviceDx));
+      const p = new Person(i, job, yards.slot(job, slot), makeFigure);
       p.slot = slot;
       return p;
     });
@@ -178,7 +185,7 @@ export class Crowd {
 
   /** Back rows first so the front row overlaps them; rerun whenever anyone changes slot. */
   private restack(): void {
-    const depth = (p: Person) => slotPoint(p.job, p.slot, this.serviceDx).y;
+    const depth = (p: Person) => this.yards.slot(p.job, p.slot).y;
     for (const p of [...this.people].sort((a, b) => depth(a) - depth(b))) this.el.append(p.el);
   }
 
@@ -189,7 +196,7 @@ export class Crowd {
       const job: Job = i < k ? "service" : "goods";
       p.setJob(job);
       p.slot = job === "service" ? i : i - k;
-      p.placeAt(slotPoint(job, p.slot, this.serviceDx));
+      p.placeAt(this.yards.slot(job, p.slot));
     });
     this.restack();
   }
@@ -221,7 +228,7 @@ export class Crowd {
     while (taken.has(slot)) slot++;
     p.setJob(job);
     p.slot = slot;
-    p.walkTo(slotPoint(job, slot, this.serviceDx), true);
+    p.walkTo(this.yards.route(p.at, this.yards.slot(job, slot)));
   }
 
   update(frame: CrowdFrame, dt: number): void {

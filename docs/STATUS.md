@@ -1,6 +1,6 @@
 # Status
 
-_Last updated: 2026-10-10_
+_Last updated: 2026-11-03_
 
 ## Done
 
@@ -13,6 +13,19 @@ _Last updated: 2026-10-10_
 
 - Four cycles of thermo-nuclear code review + design review, each acted on. Final design scores: aesthetics 8.5, interactivity 7.5, delight 8, educational value 8.5 (before the last round of fixes).
 - 2026-10-10: news-feature restyle, two new settings (home repair, legal advice) and the casebook; a fifth thermo-nuclear review, acted on (casebook claims pinned by `tests/casebook.test.ts`; lab handoff via `openLab`, with controls synced in place).
+
+## Isometric pilot (in progress)
+
+- `?iso` swaps every town figure to `src/scene/iso/`: a diorama slab with the street between the two lots, generated sprites (one factory in four machine stages shared by every setting; barbershop and care house with blank clocks for live SVG hands; six toy characters, each drawn standing and walking in both outfits so a person keeps their look when they change jobs), and the same live SVG overlays as the flat scene (board, signs, porch seats, hiring card, gate on the zebra, queue).
+- Settings other than hats and care borrow the care house until their buildings are drawn.
+- Source art and concepts live in `art/` (untracked); `scripts/sprites.py` trims generated buildings into WebP sprites and `scripts/people.py` cuts the character sheets in `art/people/`.
+
+## Layout
+
+- The simulator plates (Figs 1, 3, 4, 6 and the lab) are `plate--sim`, 54rem: a little wider than the 42rem text. Town plates under 900px use the compact composition (wage strip under the drawing).
+- Figs 1, 4 and 6 use `duo(left, right)` from `src/figures/common.ts`: on plates 760px and wider the town sits in the left column (sticky when it's alone there) with controls and readouts on the right; narrower plates stack, and anything under the town moves below the controls.
+- Fig 1's ledger sits in the right column; Fig 6's report card sits under the town, and its seven responses are title-only chips (the chosen one's description shows under the run bar).
+- The flat scene is a wide strip, so in the left column its board text gets small. The iso scene fits the column better.
 
 ## Open
 

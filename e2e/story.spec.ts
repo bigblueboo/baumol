@@ -145,3 +145,15 @@ test("opening the same industry again restarts the lab with the case's settings"
   await expect(lab.locator(".transport__year")).toHaveText(/^Year 0\b/);
   await expect(lab.getByRole("button", { name: "Play" })).toBeVisible();
 });
+
+test("the isometric pilot draws the town and moves its factory through machine stages", async ({ page }) => {
+  const errors = trackErrors(page);
+  await page.goto("/?silent&fast&iso");
+  const fig = page.locator('[data-figure="hats"]');
+  await fig.scrollIntoViewIfNeeded();
+  await expect(fig.locator("svg.town--iso")).toBeVisible();
+  await expect(fig.locator(".iso-stage.is-on")).toHaveCount(1);
+  await fig.getByRole("button", { name: /Invent/ }).click();
+  await expect(fig.locator(".iso-stage.is-on")).toHaveCount(2, { timeout: 10_000 });
+  expect(errors).toEqual([]);
+});
