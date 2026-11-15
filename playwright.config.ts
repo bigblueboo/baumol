@@ -6,7 +6,8 @@ export default defineConfig({
   testDir: "e2e",
   reporter: "list",
   timeout: 60_000,
-  use: { baseURL: `http://localhost:${port}`, trace: "retain-on-failure" },
+  // No filmstrip in traces: WebKit's screencast frames pile up in kernel memory while the Mac's display sleeps.
+  use: { baseURL: `http://localhost:${port}`, trace: { mode: "retain-on-failure", screenshots: false } },
   webServer: {
     command: `npx vite --port ${port} --strictPort`,
     url: `http://localhost:${port}`,
